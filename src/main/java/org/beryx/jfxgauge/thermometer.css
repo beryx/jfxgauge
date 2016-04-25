@@ -15,10 +15,20 @@
  */
 .gauge {
 	-fx-aspect-ratio: 0.6;
-	-gauge-default-tube-stroke: black;
-	-gauge-default-tube-stroke-width: 1;
-	-gauge-default-tube-fill: #e0e0e0;
-	-gauge-default-fluid-fill: #a0a0a0;
+	-gauge-default-tube-stroke: #2080ff;
+	-gauge-default-tube-stroke-width: 4;
+	-gauge-default-tube-fill: #c0c8ff;
+    -gauge-default-fluid-fill: #000080;
+    -gauge-default-ok-color: #00c000;
+    -gauge-default-warning-color: #f0f000;
+    -gauge-default-error-color: #e00000;
+    -gauge-default-threshold-marking-width: 2;
+}
+
+.gauge .value {
+    -fx-font-size: 16;
+    -fx-stroke: white;
+    -fx-fill: white;
 }
 
 .gauge .tube-inside {
@@ -36,13 +46,39 @@
 }
 
 .gauge .fluid-ok {
-	-fx-fill: #00c000;
+    -fx-fill: -gauge-default-ok-color;
 }
-
 .gauge .fluid-warning {
-	-fx-fill: #f0f000;
+	-fx-fill: -gauge-default-warning-color;
+}
+.gauge .fluid-error {
+	-fx-fill: -gauge-default-error-color;
 }
 
-.gauge .fluid-error {
-	-fx-fill: #e00000;
+.gauge .threshold-marking {
+    -fx-stroke-width: -gauge-default-threshold-marking-width;
+}
+.gauge .threshold-text {
+    -fx-font-size: 12;
+}
+
+.gauge .threshold-ok-marking {
+    -fx-stroke: -gauge-default-ok-color;
+}
+.gauge .threshold-ok-text {
+    -fx-fill: derive(-gauge-default-ok-color, -30%);
+}
+
+.gauge .threshold-warning-marking {
+    -fx-stroke: -gauge-default-warning-color;
+}
+.gauge .threshold-warning-text {
+    -fx-fill: derive(-gauge-default-warning-color, -40%);
+}
+
+.gauge .threshold-error-marking {
+    -fx-stroke: -gauge-default-error-color;
+}
+.gauge .threshold-error-text {
+    -fx-fill: derive(-gauge-default-error-color, -30%);
 }

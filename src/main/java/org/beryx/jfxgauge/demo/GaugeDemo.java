@@ -29,6 +29,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import org.beryx.jfxgauge.DoubleGauge;
+import org.beryx.jfxgauge.Gauge;
 import org.beryx.jfxgauge.IntGauge;
 
 public class GaugeDemo extends Application {
@@ -36,60 +38,60 @@ public class GaugeDemo extends Application {
 	@FXML IntGauge gauge0;
 	@FXML IntGauge gauge1;
 	@FXML IntGauge gauge2;
-	@FXML IntGauge gauge3;
-	@FXML IntGauge gauge4;
-	@FXML IntGauge gauge5;
+	@FXML DoubleGauge gauge3;
+	@FXML DoubleGauge gauge4;
+	@FXML DoubleGauge gauge5;
 	
-	final List<IntGauge> gauges = new ArrayList<>(); 
+	final List<Gauge<?>> gauges = new ArrayList<>();
 
 	@FXML public void initialize() {
-		this.check("gauge0");
-		this.check("gauge1");
-		this.check("gauge2");
-		this.check("gauge3");
-		this.check("gauge4");
-		this.check("gauge5");
+		check("gauge0");
+		check("gauge1");
+		check("gauge2");
+		check("gauge3");
+		check("gauge4");
+		check("gauge5");
 
-		this.gauges.addAll(Arrays.asList(this.gauge0, this.gauge1, this.gauge2, this.gauge3, this.gauge4, this.gauge5));
+		gauges.addAll(Arrays.asList(gauge0, gauge1, gauge2, gauge3, gauge4, gauge5));
 		
 		int factor = 1;
-		for(final IntGauge gauge : this.gauges) {
-            final int lowVal = gauge.getLowValue();
-            final int highVal = gauge.getHighValue();
-			final int warningThreshold = (lowVal + highVal) * factor / 3;
+		for(Gauge<?> gauge : gauges) {
+            double lowVal = gauge.lowValueProperty().getValue().doubleValue();
+            double highVal = gauge.highValueProperty().getValue().doubleValue();
+			double warningThreshold = (lowVal + highVal) * factor / 3;
 			factor = 3 - factor;
-			final int errorThreshold = (lowVal + highVal) * factor / 3;
+			double errorThreshold = (lowVal + highVal) * factor / 3;
 			gauge.configureWarningAndErrorThresholds(warningThreshold, errorThreshold).bindStatusToThresholds();
             new Timer(gauge, lowVal - 50, highVal + 50, 5_000_000L).start();
 		}
 	}
 	
-	private void check(final String name) {
+	private void check(String name) {
     	EventTarget item = null;
 		try {
-			final Field field = this.getClass().getDeclaredField(name);
+			Field field = getClass().getDeclaredField(name);
 			field.setAccessible(true);
 			item = (EventTarget)field.get(this);
-		} catch (final Exception e) {
-            throw new RuntimeException("Undefined FXML field '" + name + "' in " + this.getClass().getName(), e);
+		} catch (Exception e) {
+            throw new RuntimeException("Undefined FXML field '" + name + "' in " + getClass().getName(), e);
 		}
         if(item == null) {
-            throw new RuntimeException("fx:id=\"" + name + "\" was not injected: check your FXML file '" + this.getClass().getSimpleName() + ".fxml'.");
+            throw new RuntimeException("fx:id=\"" + name + "\" was not injected: check your FXML file '" + getClass().getSimpleName() + ".fxml'.");
         }
     }	
 	
 	
 	private static class Timer extends AnimationTimer {
-		private final IntGauge gauge;
+		private final Gauge<?> gauge;
 		private final long interval;
-		private final int startVal;
-		private final int endVal;
+		private final double startVal;
+		private final double endVal;
 		
 		private long lastTimerCall = System.nanoTime();
     	private int val = 0;
     	private int increment = 1;
 		
-        public Timer(final IntGauge gauge, final int startVal, final int endVal, final long interval) {
+        public Timer(Gauge<?> gauge, double startVal, double endVal, long interval) {
 			this.gauge = gauge;
 			this.startVal = startVal;
 			this.endVal = endVal;
@@ -97,33 +99,32 @@ public class GaugeDemo extends Application {
 		}
     	
 		@Override
-		public void handle(final long now) {
-            if (now > this.lastTimerCall + this.interval) {
-            	if(this.val <= this.startVal) this.increment = 1;
-            	if(this.val >= this.endVal) this.increment = -1;
-            	this.val += this.increment;
-            	this.gauge.setValue(this.val);
-                this.lastTimerCall = now;
-//                System.err.println("val = " + this.val);
+		public void handle(long now) {
+            if (now > lastTimerCall + interval) {
+            	if(val <= startVal) increment = 1;
+            	if(val >= endVal) increment = -1;
+            	val += increment;
+            	gauge.valueProperty().setValue(val);
+                lastTimerCall = now;
             }
 		}		
 	}
 	
-	public static void main(final String[] args) {
+	public static void main(String[] args) {
 		launch(args);
 	}
 
 	@Override
-	public void start(final Stage stage) throws Exception {
-		final GridPane root = FXMLLoader.load(this.getClass().getResource("gaugeDemo.fxml"));
+	public void start(Stage stage) throws Exception {
+		GridPane root = FXMLLoader.load(getClass().getResource("gaugeDemo.fxml"));
 
-		final Scene scene = new Scene(root, 1280, 960);
+		Scene scene = new Scene(root, 960, 720);
 
         stage.setTitle("Gauge test");
         stage.setScene(scene);        
         
-        final String resourceName = "gaugeDemo.css";
-		final URL cssResource = this.getClass().getResource(resourceName);
+        String resourceName = "gaugeDemo.css";
+		URL cssResource = getClass().getResource(resourceName);
 		if(cssResource == null) {
 			throw new RuntimeException("Resource not found: " + resourceName);
 		}

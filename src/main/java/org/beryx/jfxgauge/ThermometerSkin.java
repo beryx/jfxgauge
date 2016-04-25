@@ -15,7 +15,8 @@
  */
 package org.beryx.jfxgauge;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.guigarage.css.CssHelper;
 import com.guigarage.css.SkinPropertyBasedCssMetaData;
@@ -24,17 +25,22 @@ import javafx.css.CssMetaData;
 import javafx.css.StyleConverter;
 import javafx.css.Styleable;
 import javafx.css.StyleableObjectProperty;
+import javafx.geometry.HorizontalDirection;
+import javafx.scene.Node;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 public class ThermometerSkin extends SkinBase<Gauge<?>>{
 	private static final double DEFAULT_ASPECT_RATIO = 0.6;
-	private static final Paint DEFAULT_FLUID_FILL = Color.GRAY;
+    private static final HorizontalDirection DEFAULT_RANGE_POSITION = HorizontalDirection.RIGHT;
+    private static final HorizontalDirection DEFAULT_THRESHOLD_POSITION = HorizontalDirection.LEFT;
+
+    private final Gauge<?> gauge;
 
 	private final Pane pane = new Pane();
 	private final Circle tubeTop = new Circle();
@@ -43,126 +49,226 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
 	private final Line tubeLeftWall = new Line();
 	private final Line tubeRightWall = new Line();	
 	private final Rectangle fluidBody = new Rectangle();
-		
-	private StyleableObjectProperty<Number> aspectRatio;
-	private StyleableObjectProperty<Paint> fluidFill;	
-	
+
+    private final List<Node> markings = new ArrayList<>();
+
+    private double width;
+    private double height;
+    private double bottomRadius;
+    private double topRadius;
+    private double tubeLength;
+    private double highVal;
+    private double lowVal;
+
+    private StyleableObjectProperty<Number> aspectRatio;
+    private StyleableObjectProperty<HorizontalDirection> rangePosition;
+    private StyleableObjectProperty<HorizontalDirection> thresholdPosition;
+
+    private static final StyleConverter HDIR_CONVERTER = StyleConverter.getEnumConverter(HorizontalDirection.class);
+
     private static class StyleableProperties {
         private static final SkinPropertyBasedCssMetaData<Gauge<?>, Number> ASPECT_RATIO = CssHelper.createSkinMetaData("-fx-aspect-ratio", StyleConverter.getSizeConverter(), "aspectRatio", DEFAULT_ASPECT_RATIO);
-        private static final SkinPropertyBasedCssMetaData<Gauge<?>, Paint> FLUID_FILL = CssHelper.createSkinMetaData("-fx-fluid-fill", StyleConverter.getPaintConverter(), "fluidFill", DEFAULT_FLUID_FILL);
+        private static final SkinPropertyBasedCssMetaData<Gauge<?>, HorizontalDirection> RANGE_POSITION = CssHelper.createSkinMetaData("-fx-range-position", HDIR_CONVERTER, "rangePosition", DEFAULT_RANGE_POSITION);
+        private static final SkinPropertyBasedCssMetaData<Gauge<?>, HorizontalDirection> THRESHOLD_POSITION = CssHelper.createSkinMetaData("-fx-threshold-position", HDIR_CONVERTER, "thresholdPosition", DEFAULT_THRESHOLD_POSITION);
         @SuppressWarnings("unchecked")
-		private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES = CssHelper.createCssMetaDataList(SkinBase.getClassCssMetaData(), ASPECT_RATIO, FLUID_FILL);
+		private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES = CssHelper.createCssMetaDataList(SkinBase.getClassCssMetaData(), ASPECT_RATIO, RANGE_POSITION, THRESHOLD_POSITION);
     }
 	
-	public ThermometerSkin(final Gauge<?> control) {
-		super(control);
-		control.setCssResourceName("thermometer.css");
-		
-		this.pane.getChildren().setAll(this.tubeLeftWall, this.tubeRightWall, this.tubeBottom, this.tubeTop, this.tubeBody, this.fluidBody);
-		this.getChildren().add(this.pane);
+	public ThermometerSkin(Gauge<?> gauge) {
+		super(gauge);
+        this.gauge = gauge;
+		gauge.setCssResourceName("thermometer.css");
 
-		this.pane.getStyleClass().setAll("pane");
+		pane.getChildren().setAll(tubeLeftWall, tubeRightWall, tubeBottom, tubeTop, tubeBody, fluidBody);
+		getChildren().add(pane);
+
+		pane.getStyleClass().setAll("pane");
 		
-		this.tubeTop.getStyleClass().setAll("tube-inside", "tube-outside");
-		this.tubeBottom.getStyleClass().setAll("tube-outside", "fluid");
-		this.tubeLeftWall.getStyleClass().setAll("tube-outside");
-		this.tubeRightWall.getStyleClass().setAll("tube-outside");
-		this.tubeBody.getStyleClass().setAll("tube-inside");		
-		this.fluidBody.getStyleClass().setAll("fluid");
+		tubeTop.getStyleClass().setAll("tube-inside", "tube-outside", "tube-top");
+		tubeBottom.getStyleClass().setAll("tube-outside", "fluid", "tube-bottom");
+		tubeLeftWall.getStyleClass().setAll("tube-outside");
+		tubeRightWall.getStyleClass().setAll("tube-outside");
+		tubeBody.getStyleClass().setAll("tube-inside", "tube-body");
+		fluidBody.getStyleClass().setAll("fluid");
 		
-		this.getSkinnable().widthProperty().addListener(obs -> this.redraw());
-        this.getSkinnable().heightProperty().addListener(obs -> this.redraw());
-        this.getSkinnable().valueProperty().addListener(ev -> this.redraw());
-        this.getSkinnable().statusProperty().addListener(ev -> this.redraw());
+		gauge.widthProperty().addListener(obs -> redraw());
+        gauge.heightProperty().addListener(obs -> redraw());
+        gauge.valueProperty().addListener(ev -> redraw());
+        gauge.statusProperty().addListener(ev -> redraw());
         
-        this.redraw();
+        redraw();
 	}
 
 	private void redraw() {
-        final Gauge<?> gauge = this.getSkinnable();
-		double width  = gauge.getWidth() - gauge.getInsets().getLeft() - gauge.getInsets().getRight();
-        final double height = gauge.getHeight() - gauge.getInsets().getTop() - gauge.getInsets().getBottom();
-        final double aspectRatio = Math.min(1.0, Math.max(0.01, this.getAspectRatio()));
-        if(width * (1 + aspectRatio) > height) {
-        	width =  height / (1 + aspectRatio);
-        }
+        computeSizes();
         if (width <= 0 || height <= 0) return;
         
-        this.pane.setMaxSize(width, height);
-        this.pane.relocate((gauge.getWidth() - width) * 0.5, (gauge.getHeight() - height) * 0.5);
-        
-		final double bottomRadius = width / 2;
-		final double topRadius = bottomRadius * aspectRatio;
-		final double tubeLength = height - (bottomRadius + topRadius + Math.sqrt(bottomRadius * bottomRadius - topRadius * topRadius));
-		
-		this.tubeLeftWall.setStartX(bottomRadius - topRadius);
-		this.tubeLeftWall.setStartY(topRadius);
-		this.tubeLeftWall.setEndX(bottomRadius - topRadius);
-		this.tubeLeftWall.setEndY(topRadius + tubeLength);
-		
-		this.tubeRightWall.setStartX(bottomRadius + topRadius);
-		this.tubeRightWall.setStartY(topRadius);
-		this.tubeRightWall.setEndX(bottomRadius + topRadius);
-		this.tubeRightWall.setEndY(topRadius + tubeLength);
+        pane.setMaxSize(width, height);
+        pane.relocate((gauge.getWidth() - width) * 0.5, (gauge.getHeight() - height) * 0.5);
+        pane.getChildren().removeAll(markings);
+        markings.clear();
 
-		this.tubeBody.setX(bottomRadius - topRadius + 1);
-		this.tubeBody.setY(topRadius);
-		this.tubeBody.setWidth(2 * topRadius - 2);
-		this.tubeBody.setHeight(tubeLength);
-		
-		this.tubeTop.setCenterX(width / 2);
-		this.tubeTop.setCenterY(topRadius);
-		this.tubeTop.setRadius(topRadius);
-		
-		this.tubeBottom.setCenterX(width / 2);
-		this.tubeBottom.setCenterY(height - bottomRadius);
-		this.tubeBottom.setRadius(bottomRadius);
-		
-		final double highVal = gauge.highValueProperty().getValue().doubleValue();
-		final double lowVal = gauge.lowValueProperty().getValue().doubleValue();
-		if(highVal > lowVal) {			
-			final String style = this.getSkinnable().getStatus();
-			final String fluidStyle = (style == null) ? "fluid" : ("fluid-" + style);
-			this.fluidBody.getStyleClass().setAll(fluidStyle);
-			this.tubeBottom.getStyleClass().setAll("tube-outside", fluidStyle);
-			
-			final double val = Math.max(lowVal, Math.min(highVal, gauge.valueProperty().getValue().doubleValue()));			
-			final double offsetFromFull = tubeLength * (highVal - val) / (highVal - lowVal);
-			this.fluidBody.setX(bottomRadius - topRadius + 1);
-			this.fluidBody.setY(topRadius + offsetFromFull);
-			this.fluidBody.setWidth(2 * topRadius - 2);
-			this.fluidBody.setHeight(tubeLength + 1 - offsetFromFull);		
-		}
+        drawContainer();
+		if(highVal > lowVal) drawFluid();
+        if(gauge.isRangeVisible()) drawRange();
+        if(gauge.getThresholdsVisible()) drawThresholds();
+        if(gauge.isValueVisible()) drawValue();
 	}
-	
-	public double getAspectRatio() {
-        return this.aspectRatio == null ? DEFAULT_ASPECT_RATIO : this.aspectRatio.get().doubleValue();
+
+    private void computeSizes() {
+        highVal = gauge.highValueProperty().getValue().doubleValue();
+        lowVal = gauge.lowValueProperty().getValue().doubleValue();
+        width  = gauge.getWidth() - gauge.getInsets().getLeft() - gauge.getInsets().getRight();
+        height = gauge.getHeight() - gauge.getInsets().getTop() - gauge.getInsets().getBottom();
+        double aspectRatio = restrain(getAspectRatio(), 0.01, 1.0);
+        if(width * (1 + aspectRatio) > height) {
+            width =  height / (1 + aspectRatio);
+        }
+        bottomRadius = width / 2;
+        topRadius = bottomRadius * aspectRatio;
+        tubeLength = height - (bottomRadius + topRadius + Math.sqrt(bottomRadius * bottomRadius - topRadius * topRadius));
     }
-    public void setAspectRatio(final double newAspectRatio) {
-        this.aspectRatio.set(newAspectRatio);
+
+    private void drawContainer() {
+        tubeLeftWall.setStartX(bottomRadius - topRadius);
+        tubeLeftWall.setStartY(topRadius);
+        tubeLeftWall.setEndX(bottomRadius - topRadius);
+        tubeLeftWall.setEndY(topRadius + tubeLength);
+
+        tubeRightWall.setStartX(bottomRadius + topRadius);
+        tubeRightWall.setStartY(topRadius);
+        tubeRightWall.setEndX(bottomRadius + topRadius);
+        tubeRightWall.setEndY(topRadius + tubeLength);
+
+        tubeBody.setX(bottomRadius - topRadius + 1);
+        tubeBody.setY(topRadius);
+        tubeBody.setWidth(2 * topRadius - 2);
+        tubeBody.setHeight(tubeLength);
+
+        tubeTop.setCenterX(width / 2);
+        tubeTop.setCenterY(topRadius);
+        tubeTop.setRadius(topRadius);
+
+        tubeBottom.setCenterX(width / 2);
+        tubeBottom.setCenterY(height - bottomRadius);
+        tubeBottom.setRadius(bottomRadius);
+    }
+
+    private void drawFluid() {
+        String style = gauge.getStatus();
+        String fluidStyle = (style == null) ? "fluid" : ("fluid-" + style);
+        fluidBody.getStyleClass().setAll(fluidStyle);
+        tubeBottom.getStyleClass().setAll("tube-outside", fluidStyle);
+
+        double val = Math.max(lowVal, Math.min(highVal, gauge.valueProperty().getValue().doubleValue()));
+        double offsetFromFull = tubeLength * (highVal - val) / (highVal - lowVal);
+        fluidBody.setX(bottomRadius - topRadius + 1);
+        fluidBody.setY(topRadius + offsetFromFull);
+        fluidBody.setWidth(2 * topRadius - 2);
+        fluidBody.setHeight(tubeLength + 1 - offsetFromFull);
+    }
+
+    private void drawRange() {
+        Arrays.asList(lowVal, highVal).forEach(val -> drawMarking(val, getRangePosition(), 6, "range"));
+    }
+
+    private void drawThresholds() {
+        for(Map.Entry<Number, String> entry : gauge.getThresholds().entrySet()) {
+            double val = entry.getKey().doubleValue();
+            String style = entry.getValue();
+            drawMarking(val, getThresholdPosition(), 6, "threshold", "threshold-" + style);
+        }
+    }
+
+    private void drawValue() {
+        double wrappingWidth = restrain(2 * bottomRadius, 60, 240);
+        double x = bottomRadius - wrappingWidth / 2;
+        double y = (height + topRadius + tubeLength) / 2 + 4;//height - bottomRadius + 4;
+        double value = gauge.valueProperty().getValue().doubleValue();
+        Text text = new Text(x, y, gauge.getFormattedValue(value));
+        text.getStyleClass().setAll("value");
+        text.setTextAlignment(TextAlignment.CENTER);
+        text.setWrappingWidth(wrappingWidth);
+        pane.getChildren().add(text);
+        markings.add(text);
+    }
+
+    private void drawMarking(double value, HorizontalDirection side, double markWidth, String... styles) {
+        double y = getValueHeight(value);
+        double x = (side == HorizontalDirection.LEFT) ? (bottomRadius - topRadius - markWidth) : (bottomRadius + topRadius);
+        Line line = new Line(x, y, x + markWidth, y);
+        line.getStyleClass().setAll(Arrays.stream(styles).map(style -> style + "-marking").collect(Collectors.toList()));
+        pane.getChildren().add(line);
+        markings.add(line);
+
+        Text text = new Text(gauge.getFormattedValue(value));
+        text.setY(y + 4);
+        text.getStyleClass().setAll(Arrays.stream(styles).map(style -> style + "-text").collect(Collectors.toList()));
+        if(side == HorizontalDirection.LEFT) {
+            text.setTextAlignment(TextAlignment.RIGHT);
+            double wrappingWidth = restrain(2 * bottomRadius, 60, 240);
+            text.setWrappingWidth(wrappingWidth);
+            text.setX(x - wrappingWidth - 4);
+        } else {
+            text.setTextAlignment(TextAlignment.LEFT);
+            text.setX(x + markWidth + 4);
+        }
+        pane.getChildren().add(text);
+        markings.add(text);
+    }
+
+    private double getValueHeight(double value) {
+        if(highVal <= lowVal) return topRadius;
+        double val = restrain(value, lowVal, highVal);
+        return topRadius + tubeLength * (highVal - val) / (highVal - lowVal);
+    }
+
+    private static double restrain(double value, double minVal, double maxVal) {
+        return Math.min(maxVal, Math.max(minVal, value));
+    }
+
+	public double getAspectRatio() {
+        return aspectRatio == null ? DEFAULT_ASPECT_RATIO : aspectRatio.get().doubleValue();
+    }
+    public void setAspectRatio(double newAspectRatio) {
+        aspectRatio.set(newAspectRatio);
     }
     public StyleableObjectProperty<Number> aspectRatioProperty() {
-        if (this.aspectRatio == null) {
-            this.aspectRatio = CssHelper.createProperty(StyleableProperties.ASPECT_RATIO, this);
-            this.aspectRatio.addListener(obs -> this.redraw());
+        if (aspectRatio == null) {
+            aspectRatio = CssHelper.createProperty(StyleableProperties.ASPECT_RATIO, this);
+            aspectRatio.addListener(obs -> redraw());
         }
-        return this.aspectRatio;
+        return aspectRatio;
     }
-  
-	public Paint getFluidFill() {
-        return this.fluidFill == null ? DEFAULT_FLUID_FILL : this.fluidFill.get();
+
+    public HorizontalDirection getRangePosition() {
+        return rangePosition == null ? DEFAULT_RANGE_POSITION : rangePosition.get();
     }
-    public void setFluidFill(final Paint fluidFill) {
-        this.fluidFill.set(fluidFill);
+    public void setRangePosition(HorizontalDirection newPosition) {
+        rangePosition.set(newPosition);
     }
-    public StyleableObjectProperty<Paint> fluidFillProperty() {
-        if (this.fluidFill == null) {
-            this.fluidFill = CssHelper.createProperty(StyleableProperties.FLUID_FILL, this);
-            this.fluidFill.addListener(obs -> this.redraw());
+    public StyleableObjectProperty<HorizontalDirection> rangePositionProperty() {
+        if (rangePosition == null) {
+            rangePosition = CssHelper.createProperty(StyleableProperties.RANGE_POSITION, this);
+            rangePosition.addListener(obs -> redraw());
         }
-        return this.fluidFill;
+        return rangePosition;
     }
-  
+
+    public HorizontalDirection getThresholdPosition() {
+        return thresholdPosition == null ? DEFAULT_THRESHOLD_POSITION : thresholdPosition.get();
+    }
+    public void setThresholdPosition(HorizontalDirection newPosition) {
+        thresholdPosition.set(newPosition);
+    }
+    public StyleableObjectProperty<HorizontalDirection> thresholdPositionProperty() {
+        if (thresholdPosition == null) {
+            thresholdPosition = CssHelper.createProperty(StyleableProperties.THRESHOLD_POSITION, this);
+            thresholdPosition.addListener(obs -> redraw());
+        }
+        return thresholdPosition;
+    }
+
     @Override
     public List<CssMetaData<? extends Styleable, ?>> getCssMetaData() {
         return getClassCssMetaData();

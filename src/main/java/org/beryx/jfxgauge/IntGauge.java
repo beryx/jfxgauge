@@ -24,39 +24,39 @@ public class IntGauge extends Gauge<SimpleIntegerProperty> {
 	
 	@Override
 	public SimpleIntegerProperty valueProperty() {
-		return this.value;
+		return value;
 	}
 	public int getValue() {
-		return this.value.get();
+		return value.get();
 	}
-	public void setValue(final int newValue) {
+	public void setValue(int newValue) {
 		this.value.set(newValue);
 	}
 
 	@Override
 	public SimpleIntegerProperty lowValueProperty() {
-		return this.lowValue;
+		return lowValue;
 	}
 	public int getLowValue() {
-		return this.lowValue.get();
+		return lowValue.get();
 	}
-	public void setLowValue(final int newValue) {
+	public void setLowValue(int newValue) {
 		this.lowValue.set(newValue);
 	}
 
 	@Override
 	public SimpleIntegerProperty highValueProperty() {
-		return this.highValue;
+		return highValue;
 	}
 	public int getHighValue() {
-		return this.highValue.get();
+		return highValue.get();
 	}
-	public void setHighValue(final int newValue) {
+	public void setHighValue(int newValue) {
 		this.highValue.set(newValue);
 	}
 
 	@Override
-	public String getFormattedValue(final Number val) {
+	public String getFormattedValue(Number val) {
 		return (val == null) ? "???" : ("" + val.intValue());
 	}
 

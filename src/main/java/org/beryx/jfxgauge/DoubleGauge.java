@@ -16,48 +16,56 @@
 package org.beryx.jfxgauge;
 
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 public class DoubleGauge extends Gauge<SimpleDoubleProperty> {
 	private final SimpleDoubleProperty value = new SimpleDoubleProperty(0.0);
 	private final SimpleDoubleProperty lowValue = new SimpleDoubleProperty(0.0);
 	private final SimpleDoubleProperty highValue = new SimpleDoubleProperty(1.0);
+    private final SimpleStringProperty valueFormat = new SimpleStringProperty("%.2f");
 
 	@Override
 	public SimpleDoubleProperty valueProperty() {
-		return this.value;
+		return value;
 	}
 	public double getValue() {
-		return this.value.get();
+		return value.get();
 	}
-	public void setValue(final double newValue) {
+	public void setValue(double newValue) {
 		this.value.set(newValue);
 	}
 
 	@Override
 	public SimpleDoubleProperty lowValueProperty() {
-		return this.lowValue;
+		return lowValue;
 	}
 	public double getLowValue() {
-		return this.lowValue.get();
+		return lowValue.get();
 	}
-	public void setLowValue(final double newValue) {
+	public void setLowValue(double newValue) {
 		this.lowValue.set(newValue);
 	}
 
 	@Override
-	public SimpleDoubleProperty highValueProperty() {
-		return this.highValue;
-	}
+	public SimpleDoubleProperty highValueProperty() { return highValue; }
 	public double getHighValue() {
-		return this.highValue.get();
+		return highValue.get();
 	}
-	public void setHighValue(final double newValue) {
+	public void setHighValue(double newValue) {
 		this.highValue.set(newValue);
 	}
 
+    public SimpleStringProperty valueFormatProperty() { return valueFormat; }
+    public String getValueFormat() {
+        return valueFormat.get();
+    }
+    public void setValueFormat(String newFormat) {
+        this.valueFormat.set(newFormat);
+    }
+
 	@Override
-	public String getFormattedValue(final Number val) {
-		return (val == null) ? "???" : String.format("%.2f", val.doubleValue());
+	public String getFormattedValue(Number val) {
+		return (val == null) ? "???" : String.format(getValueFormat(), val.doubleValue());
 	}
 
 }

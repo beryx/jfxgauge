@@ -12,36 +12,131 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.gauge {
-	-fx-skin: "org.beryx.jfxgauge.ThermometerSkin";
-	-fx-aspect-ratio: 0.7;
+
+
+
+/* #################### */
+/* ##### GAUGE 0 ###### */
+/* #################### */
+
+/* No customizing for gauge0 */
+
+
+/* #################### */
+/* ##### GAUGE 1 ###### */
+/* #################### */
+#gauge1 {
+  -fx-aspect-ratio: 1.0;
+  -fx-range-position: right;
+  -fx-threshold-position: right;
+}
+#gauge1 .value {
+    // -fx-translate-y: 12;
+}
+#gauge1 .tube-inside {
+    -fx-fill: #e0e0e0;
+}
+#gauge1 .tube-outside {
+    -fx-stroke: #008000;
+    -fx-stroke-width: 1;
+}
+#gauge1 .tube-top {
+    visibility: hidden;
 }
 
-.gauge .pane {
-    //-fx-scale-x: 0.3;
-    //-fx-opacity: 0.5;
+
+/* #################### */
+/* ##### GAUGE 2 ###### */
+/* #################### */
+#gauge2 {
+    -fx-aspect-ratio: 0.15;
+    -fx-range-position: left;
+    -fx-threshold-position: left;
+}
+#gauge2 .tube-inside {
+    -fx-fill: #f0f0ff;
+}
+#gauge2 .fluid-ok {
+    -fx-fill: #60a060;
+}
+#gauge2 .fluid-warning {
+    -fx-fill: #e0a080;
+}
+#gauge2 .fluid-error {
+    -fx-fill: #e08080;
 }
 
-.gauge .tube-inside {
-	-fx-fill: #c0c8ff;
+
+/* #################### */
+/* ##### GAUGE 3 ###### */
+/* #################### */
+#gauge3 .value {
+    -fx-rotate: -135;
+}
+#gauge3 .threshold-text {
+    -fx-rotate: -135;
+    -fx-translate-x: 30;
+    -fx-translate-y: -4;
+}
+#gauge3 .range-text {
+    -fx-rotate: -135;
+    -fx-translate-x: -2;
+    -fx-translate-y: 10;
 }
 
-.gauge .tube-outside {
-	-fx-stroke: #2080ff;
-	-fx-stroke-type: outside;
-	-fx-stroke-width: 4;
+
+/* #################### */
+/* ##### GAUGE 4 ###### */
+/* #################### */
+#gauge4 .value, #gauge4 .threshold-text, #gauge4 .range-text {
+    -fx-rotate: 180;
+}
+#gauge4 .threshold-text {
+    -fx-translate-x: 24;
 }
 
-.gauge .fluid {
-	-fx-fill: #000080;
-}
 
-/*
-.gauge .fluid-ok {
-	-fx-fill: #00c000;
-}
 
-.gauge .fluid-error {
-	-fx-fill: #c00000;
+/* #################### */
+/* ##### GAUGE 5 ###### */
+/* #################### */
+#gauge5 {
+    -fx-aspect-ratio: 1.0;
 }
-*/
+#gauge5 .tube-inside {
+    -fx-fill: #ffffff;
+}
+#gauge5 .tube-outside {
+    -fx-stroke: black;
+    -fx-stroke-width: 8;
+}
+#gauge5 .range-marking, #gauge5 .threshold-ok-marking, #gauge5 .threshold-warning-marking, #gauge5 .threshold-error-marking {
+    -fx-stroke: #8080f0;
+    -fx-stroke-width: 4;
+}
+#gauge5 .threshold-ok-text, #gauge5 .threshold-warning-text, #gauge5 .threshold-error-text {
+    -fx-fill: black;
+}
+#gauge5 .value, #gauge5 .threshold-text, #gauge5 .range-text {
+    -fx-rotate: -90;
+}
+#gauge5 .value {
+    -fx-translate-y: -130;
+    -fx-stroke: black;
+}
+#gauge5 .threshold-text {
+    -fx-translate-x: 26;
+}
+#gauge5 .range-text {
+    -fx-translate-x: -10;
+    -fx-translate-y: -8;
+}
+#gauge5 .fluid-ok {
+    -fx-fill: #ff8020;
+}
+#gauge5 .fluid-warning {
+    -fx-fill: #6080f0;
+}
+#gauge5 .fluid-error {
+    -fx-fill: #ffff89;
+}

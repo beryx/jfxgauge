@@ -27,15 +27,15 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
-import javafx.scene.control.SkinBase;
-import javafx.scene.text.Text;
 
 public abstract class Gauge<P extends Property<Number>> extends Control {
     private final SimpleStringProperty status = new SimpleStringProperty();
     private final SortedMap<Number, String> thresholds = new TreeMap<>();
     private String lowestStatus;
+    private final SimpleBooleanProperty valueVisible = new SimpleBooleanProperty(true);
+    private final SimpleBooleanProperty rangeVisible = new SimpleBooleanProperty(true);
     private final SimpleBooleanProperty thresholdsVisible = new SimpleBooleanProperty(true);
-	
+
     private String cssResourceName;
 
     public abstract P valueProperty();
@@ -44,50 +44,50 @@ public abstract class Gauge<P extends Property<Number>> extends Control {
 	public abstract String getFormattedValue(Number val);
 
 	public Gauge() {
-        this.getStyleClass().add("gauge");
+        getStyleClass().add("gauge");
 	}
 		
 	public String getStatus() {
-		return this.status.get();
+		return status.get();
 	}
-	public void setStatus(final String newStatus) {
-		this.status.set(newStatus);
+	public void setStatus(String newStatus) {
+		status.set(newStatus);
 	}
 	public SimpleStringProperty statusProperty() {		
-		return this.status;
+		return status;
 	}
 	
-	public void setLowestThreshold(final String lowestStatus) {
+	public void setLowestThreshold(String lowestStatus) {
 		this.lowestStatus = lowestStatus;
 	}
 
 	public Map<Number, String> getThresholds() {
-		return this.thresholds;
+		return thresholds;
 	}
 
 	/**
 	 * Convenience method for configuring a gauge with three operation modes: ok, warning and error.
 	 * If warningThreshold < errorThreshold, the ok mode is associated with values below the warningThreshold. Otherwise, with values above the warningThreshold.
 	 */
-	public Gauge<P> configureWarningAndErrorThresholds(final Number warningThreshold, final Number errorThreshold) {
+	public Gauge<P> configureWarningAndErrorThresholds(Number warningThreshold, Number errorThreshold) {
 		if(warningThreshold == null || errorThreshold == null) {
 			throw new IllegalArgumentException("Null values not permitted: warningThreshold = " + warningThreshold + ", errorThreshold = " + errorThreshold);
 		}
-		this.thresholds.clear();
+		thresholds.clear();
 		if(warningThreshold.doubleValue() < errorThreshold.doubleValue()) {
-			this.lowestStatus = "ok";
-			this.thresholds.put(warningThreshold, "warning");
-			this.thresholds.put(errorThreshold, "error");
+			lowestStatus = "ok";
+			thresholds.put(warningThreshold, "warning");
+			thresholds.put(errorThreshold, "error");
 		} else {
-			this.lowestStatus = "error";
-			this.thresholds.put(errorThreshold, "warning");
-			this.thresholds.put(warningThreshold, "ok");
+			lowestStatus = "error";
+			thresholds.put(errorThreshold, "warning");
+			thresholds.put(warningThreshold, "ok");
 		}
 		return this;
 	}
 	
 	public Gauge<P> bindStatusToThresholds() {
-		this.status.bind(Bindings.createStringBinding(this::computeStatus, this.valueProperty()));
+		status.bind(Bindings.createStringBinding(this::computeStatus, valueProperty()));
 		return this;
 	}
 	
@@ -96,11 +96,11 @@ public abstract class Gauge<P extends Property<Number>> extends Control {
 	 * Subclasses may override this method to provide alternative ways of computing the status.
 	 */
 	protected String computeStatus() {		
-		final Number val = this.valueProperty().getValue();
+		Number val = valueProperty().getValue();
 		if(val == null) return null;
-		String currStatus = this.lowestStatus;
-		for(final Entry<Number,String> entry : this.thresholds.entrySet()) {
-			final Number limit = entry.getKey();
+		String currStatus = lowestStatus;
+		for(Entry<Number,String> entry : thresholds.entrySet()) {
+			Number limit = entry.getKey();
 			if(limit == null) return null;
 			if(val.doubleValue() < limit.doubleValue()) break;
 			currStatus = entry.getValue();
@@ -108,46 +108,51 @@ public abstract class Gauge<P extends Property<Number>> extends Control {
 		return currStatus;
 	}
 
-	public boolean getThresholdsVisible() {
-		return this.thresholdsVisible.get();
-	}
-	public void setThresholdsVisible(final boolean visible) {
-		this.thresholdsVisible.set(visible);
-	}
-	public SimpleBooleanProperty thresholdsVisibleProperty() {
-		return this.thresholdsVisible;
-	}
-	
-	public void setCssResourceName(final String cssResourceName) {
+    public boolean isValueVisible() {
+        return valueVisible.get();
+    }
+    public void setValueVisible(boolean visible) {
+        this.valueVisible.set(visible);
+    }
+    public SimpleBooleanProperty valueVisibleProperty() {
+        return valueVisible;
+    }
+
+    public boolean isRangeVisible() {
+        return rangeVisible.get();
+    }
+    public void setRangeVisible(boolean visible) {
+        this.rangeVisible.set(visible);
+    }
+    public SimpleBooleanProperty rangeVisibleProperty() {
+        return rangeVisible;
+    }
+
+    public boolean getThresholdsVisible() {
+        return thresholdsVisible.get();
+    }
+    public void setThresholdsVisible(boolean visible) {
+        this.thresholdsVisible.set(visible);
+    }
+    public SimpleBooleanProperty thresholdsVisibleProperty() {
+        return thresholdsVisible;
+    }
+
+    public void setCssResourceName(String cssResourceName) {
 		this.cssResourceName = cssResourceName;
 	}
 
-	/**
-	 * An extremely simple skin used as default and consisting only of a {@link Text} component.
-	 * @param <PP>
-	 */
-	public static class TextSkin<PP extends Property<Number>> extends SkinBase<Gauge<PP>> {
-		private final Text text = new Text();
-		protected TextSkin(final Gauge<PP> control) {
-			super(control);
-			this.getChildren().setAll(this.text);
-			final Gauge<PP> gauge = this.getSkinnable();
-			final PP valProp = gauge.valueProperty();
-			this.text.textProperty().bind(Bindings.createStringBinding(() -> gauge.getFormattedValue(valProp.getValue()), valProp));
-		}		
-	}
-	
-	/**
+    /**
 	 * This implementation returns a {@link TextSkin}. 
 	 * It may be overridden by subclasses, but the preferred way to set the skin is by setting the CSS property '-fx-skin'.
 	 */
 	@Override protected Skin<?> createDefaultSkin() {
-        return new TextSkin<P>(this);
+        return new ThermometerSkin(this);
     }
 
     @Override public String getUserAgentStylesheet() {
-        if(this.cssResourceName == null) return null;
-		final URL resource = this.getClass().getResource(this.cssResourceName);
+        if(cssResourceName == null) return null;
+		URL resource = getClass().getResource(cssResourceName);
 		return (resource == null) ? null : resource.toExternalForm();
     }
 }

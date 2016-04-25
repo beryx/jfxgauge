@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import org.beryx.jfxgauge.IntGauge?>
+<?import org.beryx.jfxgauge.DoubleGauge?>
 
 <GridPane fx:controller="org.beryx.jfxgauge.demo.GaugeDemo" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.66" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
@@ -34,17 +35,17 @@
       </Pane>
       <Pane GridPane.columnIndex="0" GridPane.rowIndex="1">
          <children>
-            <IntGauge fx:id="gauge3" highValue="200" lowValue="20" prefHeight="300.0" prefWidth="60.0" rotate="135.0" translateX="120.0" translateY="20.0" />
+            <DoubleGauge fx:id="gauge3" highValue="200" lowValue="20" prefHeight="300.0" prefWidth="60.0" rotate="135.0" translateX="120.0" translateY="20.0" />
          </children>
       </Pane>
       <Pane GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <IntGauge fx:id="gauge4" highValue="1111" lowValue="111" prefHeight="300.0" prefWidth="60.0" rotate="180.0" translateX="60.0" translateY="20.0" />
+            <DoubleGauge fx:id="gauge4" highValue="555" lowValue="55" prefHeight="300.0" prefWidth="60.0" rotate="180.0" translateX="60.0" translateY="20.0" />
          </children>
       </Pane>
       <Pane GridPane.columnIndex="2" GridPane.rowIndex="1">
          <children>
-            <IntGauge fx:id="gauge5" highValue="350" lowValue="50" prefHeight="300.0" prefWidth="60.0" rotate="90.0" translateX="60.0" translateY="20.0" />
+            <DoubleGauge fx:id="gauge5" highValue="350" lowValue="50" prefHeight="300.0" prefWidth="60.0" rotate="90.0" translateX="60.0" translateY="20.0" />
          </children>
       </Pane>
    </children>
