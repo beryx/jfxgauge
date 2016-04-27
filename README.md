@@ -5,4 +5,4 @@
 A JavaFX gauge with a thermometer skin.
 
 
-![](https://github.com/beryx/jfxgauge/raw/master/doc/img/gaugeDemo.gif)
+![](https://github.com/beryx/jfxgauge/raw/master/doc/gaugeDemo.gif)
