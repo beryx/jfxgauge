@@ -173,20 +173,21 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
     }
 
     private void drawThresholds() {
-        for(Map.Entry<Number, String> entry : gauge.getThresholds().entrySet()) {
-            double val = entry.getKey().doubleValue();
-            String style = entry.getValue();
-            drawMarking(val, getThresholdPosition(), 6, "threshold", "threshold-" + style);
-        }
+        gauge.getThresholds().forEach(t ->
+                drawMarking(t.getValue(), getThresholdPosition(), 6, "threshold", "threshold-" + t.getStatus()));
     }
 
     private void drawValue() {
         double wrappingWidth = restrain(2 * bottomRadius, 60, 240);
         double x = bottomRadius - wrappingWidth / 2;
-        double y = (height + topRadius + tubeLength) / 2 + 4;//height - bottomRadius + 4;
+        double y = (height + topRadius + tubeLength) / 2 + 4;
         double value = gauge.valueProperty().getValue().doubleValue();
         Text text = new Text(x, y, gauge.getFormattedValue(value));
         text.getStyleClass().setAll("value");
+        String style = gauge.getStatus();
+        if(style != null) {
+            text.getStyleClass().add("value-" + style);
+        }
         text.setTextAlignment(TextAlignment.CENTER);
         text.setWrappingWidth(wrappingWidth);
         pane.getChildren().add(text);

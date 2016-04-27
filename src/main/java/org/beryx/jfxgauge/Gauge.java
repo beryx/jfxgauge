@@ -15,23 +15,23 @@
  */
 package org.beryx.jfxgauge;
 
-import java.net.URL;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 
+import java.net.URL;
+
 public abstract class Gauge<P extends Property<Number>> extends Control {
     private final SimpleStringProperty status = new SimpleStringProperty();
-    private final SortedMap<Number, String> thresholds = new TreeMap<>();
-    private String lowestStatus;
+    private final SimpleStringProperty lowestStatus = new SimpleStringProperty();
+    private final SimpleListProperty<Threshold> thresholds = new SimpleListProperty(FXCollections.observableArrayList());
     private final SimpleBooleanProperty valueVisible = new SimpleBooleanProperty(true);
     private final SimpleBooleanProperty rangeVisible = new SimpleBooleanProperty(true);
     private final SimpleBooleanProperty thresholdsVisible = new SimpleBooleanProperty(true);
@@ -56,14 +56,28 @@ public abstract class Gauge<P extends Property<Number>> extends Control {
 	public SimpleStringProperty statusProperty() {		
 		return status;
 	}
-	
-	public void setLowestThreshold(String lowestStatus) {
-		this.lowestStatus = lowestStatus;
-	}
 
-	public Map<Number, String> getThresholds() {
-		return thresholds;
-	}
+    /**
+     * @return the status associated with values below the first threshold
+     */
+    public String getLowestStatus() {
+        return lowestStatus.get();
+    }
+    public void setLowestStatus(String newStatus) {
+        lowestStatus.set(newStatus);
+    }
+    public SimpleStringProperty lowestStatusProperty() {
+        return lowestStatus;
+    }
+
+
+    public ObservableList<Threshold> getThresholds() {
+        return thresholds.get();
+    }
+    public void setThresholds(ObservableList<Threshold> newThresholds) { thresholds.setValue(new SortedList<Threshold>(newThresholds)); }
+    public SimpleListProperty<Threshold> thresholdsProperty() {
+        return thresholds;
+    }
 
 	/**
 	 * Convenience method for configuring a gauge with three operation modes: ok, warning and error.
@@ -75,22 +89,22 @@ public abstract class Gauge<P extends Property<Number>> extends Control {
 		}
 		thresholds.clear();
 		if(warningThreshold.doubleValue() < errorThreshold.doubleValue()) {
-			lowestStatus = "ok";
-			thresholds.put(warningThreshold, "warning");
-			thresholds.put(errorThreshold, "error");
+			setLowestStatus("ok");
+			thresholds.add(new Threshold("warning", warningThreshold.doubleValue()));
+			thresholds.add(new Threshold("error", errorThreshold.doubleValue()));
 		} else {
-			lowestStatus = "error";
-			thresholds.put(errorThreshold, "warning");
-			thresholds.put(warningThreshold, "ok");
+			setLowestStatus("error");
+			thresholds.add(new Threshold("warning", errorThreshold.doubleValue()));
+			thresholds.add(new Threshold("ok", warningThreshold.doubleValue()));
 		}
 		return this;
 	}
 	
-	public Gauge<P> bindStatusToThresholds() {
+	public Gauge<P> bindStatusToValue() {
 		status.bind(Bindings.createStringBinding(this::computeStatus, valueProperty()));
 		return this;
 	}
-	
+
 	/**
 	 * This implementation uses the thresholds to determine the status.
 	 * Subclasses may override this method to provide alternative ways of computing the status.
@@ -98,12 +112,12 @@ public abstract class Gauge<P extends Property<Number>> extends Control {
 	protected String computeStatus() {		
 		Number val = valueProperty().getValue();
 		if(val == null) return null;
-		String currStatus = lowestStatus;
-		for(Entry<Number,String> entry : thresholds.entrySet()) {
-			Number limit = entry.getKey();
-			if(limit == null) return null;
+		String currStatus = lowestStatus.getValue();
+
+        for(Threshold threshold : thresholds) {
+			Number limit = threshold.getValue();
 			if(val.doubleValue() < limit.doubleValue()) break;
-			currStatus = entry.getValue();
+			currStatus = threshold.getStatus();
 		}
 		return currStatus;
 	}

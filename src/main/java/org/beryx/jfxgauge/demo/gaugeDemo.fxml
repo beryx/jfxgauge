@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import org.beryx.jfxgauge.Threshold?>
 <?import org.beryx.jfxgauge.IntGauge?>
 <?import org.beryx.jfxgauge.DoubleGauge?>
 
@@ -19,34 +21,34 @@
   </rowConstraints>
    <children>
       <Pane GridPane.columnIndex="0" GridPane.rowIndex="0">
-         <children>
             <IntGauge fx:id="gauge0" highValue="610" lowValue="10" prefHeight="300.0" prefWidth="60.0" rotate="15.0" translateX="60.0" translateY="20.0" />
-         </children>
       </Pane>
       <Pane GridPane.columnIndex="1" GridPane.rowIndex="0">
-         <children>
             <IntGauge fx:id="gauge1" highValue="100" lowValue="1" prefHeight="300.0" prefWidth="60.0" rotate="0.0" translateX="60.0" translateY="20.0" />
-         </children>
       </Pane>
       <Pane GridPane.columnIndex="2" GridPane.rowIndex="0">
-         <children>
             <IntGauge fx:id="gauge2" highValue="150" lowValue="10" prefHeight="300.0" prefWidth="60.0" rotate="-15.0" translateX="60.0" translateY="20.0" />
-         </children>
       </Pane>
       <Pane GridPane.columnIndex="0" GridPane.rowIndex="1">
-         <children>
             <DoubleGauge fx:id="gauge3" highValue="200" lowValue="20" prefHeight="300.0" prefWidth="60.0" rotate="135.0" translateX="120.0" translateY="20.0" />
-         </children>
       </Pane>
       <Pane GridPane.columnIndex="1" GridPane.rowIndex="1">
-         <children>
-            <DoubleGauge fx:id="gauge4" highValue="555" lowValue="55" prefHeight="300.0" prefWidth="60.0" rotate="180.0" translateX="60.0" translateY="20.0" />
-         </children>
+            <DoubleGauge fx:id="gauge4" highValue="400" lowValue="50" prefHeight="300.0" prefWidth="60.0" rotate="180.0" translateX="60.0" translateY="20.0" valueFormat="\%.1f">
+                <lowestStatus>status0</lowestStatus>
+                <thresholds>
+                    <FXCollections fx:factory="observableArrayList">
+                        <Threshold status="status1" value="100" />
+                        <Threshold status="status2" value="150" />
+                        <Threshold status="status3" value="200" />
+                        <Threshold status="status4" value="250" />
+                        <Threshold status="status5" value="300" />
+                        <Threshold status="status6" value="350" />
+                    </FXCollections>
+                </thresholds>
+            </DoubleGauge>
       </Pane>
       <Pane GridPane.columnIndex="2" GridPane.rowIndex="1">
-         <children>
-            <DoubleGauge fx:id="gauge5" highValue="350" lowValue="50" prefHeight="300.0" prefWidth="60.0" rotate="90.0" translateX="60.0" translateY="20.0" />
-         </children>
+            <DoubleGauge fx:id="gauge5" highValue="350" lowValue="50" prefHeight="300.0" prefWidth="60.0" rotate="90.0" translateX="60.0" translateY="20.0" valueFormat="\%.3f" />
       </Pane>
    </children>
 </GridPane>

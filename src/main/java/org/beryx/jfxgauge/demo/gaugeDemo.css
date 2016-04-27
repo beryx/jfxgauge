@@ -27,11 +27,8 @@
 /* #################### */
 #gauge1 {
   -fx-aspect-ratio: 1.0;
-  -fx-range-position: right;
-  -fx-threshold-position: right;
-}
-#gauge1 .value {
-    // -fx-translate-y: 12;
+  -fx-range-position: left;
+  -fx-threshold-position: left;
 }
 #gauge1 .tube-inside {
     -fx-fill: #e0e0e0;
@@ -50,8 +47,8 @@
 /* #################### */
 #gauge2 {
     -fx-aspect-ratio: 0.15;
-    -fx-range-position: left;
-    -fx-threshold-position: left;
+    -fx-range-position: right;
+    -fx-threshold-position: right;
 }
 #gauge2 .tube-inside {
     -fx-fill: #f0f0ff;
@@ -63,15 +60,35 @@
     -fx-fill: #e0a080;
 }
 #gauge2 .fluid-error {
-    -fx-fill: #e08080;
+    -fx-fill: #e04080;
 }
 
 
 /* #################### */
 /* ##### GAUGE 3 ###### */
 /* #################### */
+
+#gauge3 {
+    -text-color-ok: derive(-gauge-default-ok-color, -40%);
+    -text-color-warning: derive(-gauge-default-warning-color, -40%);
+    -text-color-error: derive(-gauge-default-error-color, -30%);
+}
 #gauge3 .value {
     -fx-rotate: -135;
+    -fx-translate-x: 50;
+    -fx-translate-y: -120;
+}
+#gauge3 .value-ok {
+    -fx-fill: -text-color-ok;
+    -fx-stroke: -text-color-ok;
+}
+#gauge3 .value-warning {
+    -fx-fill: -text-color-warning;
+    -fx-stroke: -text-color-warning;
+}
+#gauge3 .value-error {
+    -fx-fill: -text-color-error;
+    -fx-stroke: -text-color-error;
 }
 #gauge3 .threshold-text {
     -fx-rotate: -135;
@@ -88,11 +105,24 @@
 /* #################### */
 /* ##### GAUGE 4 ###### */
 /* #################### */
+#gauge4 .tube-outside {
+    -fx-stroke: #00c080;
+    -fx-fill: white;
+}
+#gauge4 .tube-inside {
+    -fx-fill: #ffffc0;
+}
 #gauge4 .value, #gauge4 .threshold-text, #gauge4 .range-text {
     -fx-rotate: 180;
 }
 #gauge4 .threshold-text {
     -fx-translate-x: 24;
+}
+#gauge4 .fluid-status0, #gauge4 .fluid-status2, #gauge4 .fluid-status4, #gauge4 .fluid-status6 {
+    -fx-fill: #2080ff;
+}
+#gauge4 .fluid-status1, #gauge4 .fluid-status3, #gauge4 .fluid-status5 {
+    -fx-fill: #ffc040;
 }
 
 

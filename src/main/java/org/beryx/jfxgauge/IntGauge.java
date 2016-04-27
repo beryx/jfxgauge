@@ -16,11 +16,13 @@
 package org.beryx.jfxgauge;
 
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 
 public class IntGauge extends Gauge<SimpleIntegerProperty> {
 	private final SimpleIntegerProperty value = new SimpleIntegerProperty(0);
 	private final SimpleIntegerProperty lowValue = new SimpleIntegerProperty(0);
 	private final SimpleIntegerProperty highValue = new SimpleIntegerProperty(100);
+    private final SimpleStringProperty valueFormat = new SimpleStringProperty("%d");
 	
 	@Override
 	public SimpleIntegerProperty valueProperty() {
@@ -55,9 +57,19 @@ public class IntGauge extends Gauge<SimpleIntegerProperty> {
 		this.highValue.set(newValue);
 	}
 
+    public String getValueFormat() {
+        return valueFormat.get();
+    }
+    public void setValueFormat(String newFormat) {
+        valueFormat.set(newFormat);
+    }
+    public SimpleStringProperty valueFormatProperty() {
+        return valueFormat;
+    }
+
 	@Override
 	public String getFormattedValue(Number val) {
-		return (val == null) ? "???" : ("" + val.intValue());
+		return (val == null) ? "???" : (String.format(valueFormat.get(), val.intValue()));
 	}
 
 }

@@ -58,10 +58,13 @@ public class GaugeDemo extends Application {
 		for(Gauge<?> gauge : gauges) {
             double lowVal = gauge.lowValueProperty().getValue().doubleValue();
             double highVal = gauge.highValueProperty().getValue().doubleValue();
-			double warningThreshold = (lowVal + highVal) * factor / 3;
-			factor = 3 - factor;
-			double errorThreshold = (lowVal + highVal) * factor / 3;
-			gauge.configureWarningAndErrorThresholds(warningThreshold, errorThreshold).bindStatusToThresholds();
+            if(gauge.getThresholds().isEmpty()) {
+                double warningThreshold = (lowVal + highVal) * factor / 3;
+                factor = 3 - factor;
+                double errorThreshold = (lowVal + highVal) * factor / 3;
+                gauge.configureWarningAndErrorThresholds(warningThreshold, errorThreshold);
+            }
+            gauge.bindStatusToValue();
             new Timer(gauge, lowVal - 50, highVal + 50, 5_000_000L).start();
 		}
 	}
@@ -88,8 +91,8 @@ public class GaugeDemo extends Application {
 		private final double endVal;
 		
 		private long lastTimerCall = System.nanoTime();
-    	private int val = 0;
-    	private int increment = 1;
+    	private double val = 0;
+    	private double increment = 1;
 		
         public Timer(Gauge<?> gauge, double startVal, double endVal, long interval) {
 			this.gauge = gauge;
@@ -101,8 +104,8 @@ public class GaugeDemo extends Application {
 		@Override
 		public void handle(long now) {
             if (now > lastTimerCall + interval) {
-            	if(val <= startVal) increment = 1;
-            	if(val >= endVal) increment = -1;
+            	if(val <= startVal) increment = 0.97;
+            	if(val >= endVal) increment = -0.97;
             	val += increment;
             	gauge.valueProperty().setValue(val);
                 lastTimerCall = now;
@@ -120,7 +123,7 @@ public class GaugeDemo extends Application {
 
 		Scene scene = new Scene(root, 960, 720);
 
-        stage.setTitle("Gauge test");
+        stage.setTitle("Gauge Demo");
         stage.setScene(scene);        
         
         String resourceName = "gaugeDemo.css";
