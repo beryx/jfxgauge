@@ -40,6 +40,12 @@
 #gauge1 .tube-top {
     visibility: hidden;
 }
+#gauge1 .fluid-not-available, #gauge1 .tube-inside-not-available  {
+    -fx-fill: -gauge-default-not-available-inside-color;
+}
+#gauge1 .tube-outside-not-available {
+    -fx-stroke: -gauge-default-not-available-outside-color;
+}
 
 
 /* #################### */
@@ -61,6 +67,9 @@
 }
 #gauge2 .fluid-error {
     -fx-fill: #e04080;
+}
+#gauge2 .fluid-not-available, #gauge2 .tube-inside-not-available  {
+    -fx-fill: -gauge-default-not-available-inside-color;
 }
 
 
@@ -124,6 +133,12 @@
 #gauge4 .fluid-status1, #gauge4 .fluid-status3, #gauge4 .fluid-status5 {
     -fx-fill: #ffc040;
 }
+#gauge4 .fluid-not-available, #gauge4 .tube-inside-not-available  {
+    -fx-fill: -gauge-default-not-available-inside-color;
+}
+#gauge4 .tube-outside-not-available {
+    -fx-stroke: -gauge-default-not-available-outside-color;
+}
 
 
 
@@ -169,4 +184,7 @@
 }
 #gauge5 .fluid-error {
     -fx-fill: #ffff89;
+}
+#gauge5 .fluid-not-available, #gauge5 .tube-inside-not-available  {
+    -fx-fill: -gauge-default-not-available-inside-color;
 }

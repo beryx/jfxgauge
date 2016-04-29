@@ -112,7 +112,17 @@ public class GaugeDemo extends Application {
             }
 		}		
 	}
-	
+
+    private void toggle(Gauge<?> gauge) {
+        gauge.setImposedStatus((gauge.getImposedStatus() == null) ? "not-available" : null);
+    }
+    @FXML private void toggle0() { toggle(gauge0); }
+    @FXML private void toggle1() { toggle(gauge1); }
+    @FXML private void toggle2() { toggle(gauge2); }
+    @FXML private void toggle3() { toggle(gauge3); }
+    @FXML private void toggle4() { toggle(gauge4); }
+    @FXML private void toggle5() { toggle(gauge5); }
+
 	public static void main(String[] args) {
 		launch(args);
 	}
