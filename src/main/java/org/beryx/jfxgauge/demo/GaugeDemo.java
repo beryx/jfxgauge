@@ -64,7 +64,7 @@ public class GaugeDemo extends Application {
                 double errorThreshold = (lowVal + highVal) * factor / 3;
                 gauge.configureWarningAndErrorThresholds(warningThreshold, errorThreshold);
             }
-            gauge.bindStatusToValue();
+//            gauge.bindStatusToValue();
             new Timer(gauge, lowVal - 50, highVal + 50, 5_000_000L).start();
 		}
 	}

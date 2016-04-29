@@ -82,15 +82,6 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
 		pane.getChildren().setAll(tubeLeftWall, tubeRightWall, tubeBottom, tubeTop, tubeBody, fluidBody);
 		getChildren().add(pane);
 
-		pane.getStyleClass().setAll("pane");
-		
-		tubeTop.getStyleClass().setAll("tube-inside", "tube-outside", "tube-top");
-		tubeBottom.getStyleClass().setAll("tube-outside", "fluid", "tube-bottom");
-		tubeLeftWall.getStyleClass().setAll("tube-outside");
-		tubeRightWall.getStyleClass().setAll("tube-outside");
-		tubeBody.getStyleClass().setAll("tube-inside", "tube-body");
-		fluidBody.getStyleClass().setAll("fluid");
-		
 		gauge.widthProperty().addListener(obs -> redraw());
         gauge.heightProperty().addListener(obs -> redraw());
         gauge.valueProperty().addListener(ev -> redraw());
@@ -100,9 +91,11 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
 	}
 
 	private void redraw() {
+        setAllStyleClasses();
+
         computeSizes();
         if (width <= 0 || height <= 0) return;
-        
+
         pane.setMaxSize(width, height);
         pane.relocate((gauge.getWidth() - width) * 0.5, (gauge.getHeight() - height) * 0.5);
         pane.getChildren().removeAll(markings);
@@ -114,6 +107,26 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
         if(gauge.getThresholdsVisible()) drawThresholds();
         if(gauge.isValueVisible()) drawValue();
 	}
+
+    private void setAllStyleClasses() {
+        String status = gauge.getStatus();
+        setStyleClasses(pane, status, "pane");
+        setStyleClasses(tubeTop, status, "tube-inside", "tube-outside", "tube-top");
+        setStyleClasses(tubeBottom, status, "tube-outside", "fluid", "tube-bottom");
+        setStyleClasses(tubeLeftWall, status, "tube-outside");
+        setStyleClasses(tubeRightWall, status, "tube-outside");
+        setStyleClasses(tubeBody, status, "tube-inside", "tube-body");
+        setStyleClasses(fluidBody, status, "fluid");
+    }
+
+    private void setStyleClasses(Node node, String status, String... styles) {
+        node.getStyleClass().setAll(styles);
+        if(status != null) {
+            for(String style : styles) {
+                node.getStyleClass().add(style + "-" + status);
+            }
+        }
+    }
 
     private void computeSizes() {
         highVal = gauge.highValueProperty().getValue().doubleValue();
@@ -155,11 +168,6 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
     }
 
     private void drawFluid() {
-        String style = gauge.getStatus();
-        String fluidStyle = (style == null) ? "fluid" : ("fluid-" + style);
-        fluidBody.getStyleClass().setAll(fluidStyle);
-        tubeBottom.getStyleClass().setAll("tube-outside", fluidStyle);
-
         double val = Math.max(lowVal, Math.min(highVal, gauge.valueProperty().getValue().doubleValue()));
         double offsetFromFull = tubeLength * (highVal - val) / (highVal - lowVal);
         fluidBody.setX(bottomRadius - topRadius + 1);
@@ -183,11 +191,7 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
         double y = (height + topRadius + tubeLength) / 2 + 4;
         double value = gauge.valueProperty().getValue().doubleValue();
         Text text = new Text(x, y, gauge.getFormattedValue(value));
-        text.getStyleClass().setAll("value");
-        String style = gauge.getStatus();
-        if(style != null) {
-            text.getStyleClass().add("value-" + style);
-        }
+        setStyleClasses(text, gauge.getStatus(), "value");
         text.setTextAlignment(TextAlignment.CENTER);
         text.setWrappingWidth(wrappingWidth);
         pane.getChildren().add(text);

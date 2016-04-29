@@ -15,6 +15,7 @@
  */
 package org.beryx.jfxgauge;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -23,7 +24,11 @@ public class IntGauge extends Gauge<SimpleIntegerProperty> {
 	private final SimpleIntegerProperty lowValue = new SimpleIntegerProperty(0);
 	private final SimpleIntegerProperty highValue = new SimpleIntegerProperty(100);
     private final SimpleStringProperty valueFormat = new SimpleStringProperty("%d");
-	
+
+    public IntGauge() {
+        statusWrapper.bind(Bindings.createStringBinding(this::computeStatus, value, imposedStatusProperty()));
+    }
+
 	@Override
 	public SimpleIntegerProperty valueProperty() {
 		return value;

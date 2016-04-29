@@ -23,6 +23,8 @@
     -gauge-default-warning-color: #f0f000;
     -gauge-default-error-color: #e00000;
     -gauge-default-threshold-marking-width: 2;
+    -gauge-default-not-available-inside-color: lightgray;
+    -gauge-default-not-available-outside-color: darkgray;
 }
 
 .gauge .value {
@@ -30,9 +32,18 @@
     -fx-stroke: white;
     -fx-fill: white;
 }
+.gauge .value-not-available {
+    visibility: hidden;
+    -fx-font-size: 24;
+    -fx-stroke: black;
+    -fx-fill: black;
+}
 
 .gauge .tube-inside {
 	-fx-fill: -gauge-default-tube-fill;
+}
+.gauge .tube-inside-not-available {
+    -fx-fill: -gauge-default-not-available-inside-color;
 }
 
 .gauge .tube-outside {
@@ -40,9 +51,18 @@
 	-fx-stroke-type: outside;
 	-fx-stroke-width: -gauge-default-tube-stroke-width;
 }
+.gauge .pane-not-available {
+    -fx-opacity: 0.3;
+}
+.gauge .tube-outside-not-available {
+    -fx-stroke: -gauge-default-not-available-outside-color;
+}
 
 .gauge .fluid {
-	-fx-fill: -gauge-default-fluid-fill;
+    -fx-fill: -gauge-default-fluid-fill;
+}
+.gauge .fluid-not-available {
+    -fx-fill: -gauge-default-not-available-inside-color;
 }
 
 .gauge .fluid-ok {

@@ -15,6 +15,7 @@
  */
 package org.beryx.jfxgauge;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -23,6 +24,10 @@ public class DoubleGauge extends Gauge<SimpleDoubleProperty> {
 	private final SimpleDoubleProperty lowValue = new SimpleDoubleProperty(0.0);
 	private final SimpleDoubleProperty highValue = new SimpleDoubleProperty(1.0);
     private final SimpleStringProperty valueFormat = new SimpleStringProperty("%.2f");
+
+    public DoubleGauge() {
+        statusWrapper.bind(Bindings.createStringBinding(this::computeStatus, value, imposedStatusProperty()));
+    }
 
 	@Override
 	public SimpleDoubleProperty valueProperty() {

@@ -16,10 +16,7 @@
 package org.beryx.jfxgauge;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleListProperty;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -29,7 +26,9 @@ import javafx.scene.control.Skin;
 import java.net.URL;
 
 public abstract class Gauge<P extends Property<Number>> extends Control {
-    private final SimpleStringProperty status = new SimpleStringProperty();
+    protected final ReadOnlyStringWrapper statusWrapper = new ReadOnlyStringWrapper();
+    private final ReadOnlyStringProperty status = statusWrapper.getReadOnlyProperty();
+    private final SimpleStringProperty imposedStatus = new SimpleStringProperty();
     private final SimpleStringProperty lowestStatus = new SimpleStringProperty();
     private final SimpleListProperty<Threshold> thresholds = new SimpleListProperty(FXCollections.observableArrayList());
     private final SimpleBooleanProperty valueVisible = new SimpleBooleanProperty(true);
@@ -45,17 +44,27 @@ public abstract class Gauge<P extends Property<Number>> extends Control {
 
 	public Gauge() {
         getStyleClass().add("gauge");
-	}
+    }
 		
 	public String getStatus() {
 		return status.get();
 	}
-	public void setStatus(String newStatus) {
-		status.set(newStatus);
-	}
-	public SimpleStringProperty statusProperty() {		
+	public ReadOnlyStringProperty statusProperty() {
 		return status;
 	}
+
+    /**
+     * @return the status imposed on this gauge. If this property has a non-null value, it supersedes the status computed by {@link #computeStatus()}.
+     */
+    public String getImposedStatus() {
+        return imposedStatus.get();
+    }
+    public void setImposedStatus(String newStatus) {
+        imposedStatus.set(newStatus);
+    }
+    public SimpleStringProperty imposedStatusProperty() {
+        return imposedStatus;
+    }
 
     /**
      * @return the status associated with values below the first threshold
@@ -100,25 +109,23 @@ public abstract class Gauge<P extends Property<Number>> extends Control {
 		return this;
 	}
 	
-	public Gauge<P> bindStatusToValue() {
-		status.bind(Bindings.createStringBinding(this::computeStatus, valueProperty()));
-		return this;
-	}
-
 	/**
 	 * This implementation uses the thresholds to determine the status.
 	 * Subclasses may override this method to provide alternative ways of computing the status.
 	 */
-	protected String computeStatus() {		
-		Number val = valueProperty().getValue();
-		if(val == null) return null;
-		String currStatus = lowestStatus.getValue();
-
-        for(Threshold threshold : thresholds) {
-			Number limit = threshold.getValue();
-			if(val.doubleValue() < limit.doubleValue()) break;
-			currStatus = threshold.getStatus();
-		}
+	protected String computeStatus() {
+        String currStatus = getImposedStatus();
+        if(currStatus == null) {
+            Number val = valueProperty().getValue();
+            if(val != null) {
+                currStatus = lowestStatus.getValue();
+                for(Threshold threshold : thresholds) {
+                    Number limit = threshold.getValue();
+                    if(val.doubleValue() < limit.doubleValue()) break;
+                    currStatus = threshold.getStatus();
+                }
+            }
+        }
 		return currStatus;
 	}
 
