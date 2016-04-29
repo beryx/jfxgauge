@@ -24,13 +24,32 @@ import javafx.scene.text.Text;
  * An extremely simple skin consisting only of a {@link Text} component.
  */
 public class TextSkin extends SkinBase<Gauge<?>> {
+    private final Gauge<?> gauge;
     private final Text text = new Text();
 
     public TextSkin(Gauge<?> gauge) {
         super(gauge);
+        this.gauge = gauge;
         text.getStyleClass().setAll("text");
         getChildren().setAll(text);
         Property<Number> valProp = gauge.valueProperty();
         text.textProperty().bind(Bindings.createStringBinding(() -> gauge.getFormattedValue(valProp.getValue()), valProp));
+
+        gauge.widthProperty().addListener(obs -> redraw());
+        gauge.heightProperty().addListener(obs -> redraw());
+        gauge.valueProperty().addListener(ev -> redraw());
+        gauge.statusProperty().addListener(ev -> redraw());
+
+        redraw();
+    }
+
+    private void redraw() {
+        if(gauge.isValueVisible()) {
+            text.getStyleClass().setAll("value");
+            String style = gauge.getStatus();
+            if(style != null) {
+                text.getStyleClass().add("value-" + style);
+            }
+        }
     }
 }

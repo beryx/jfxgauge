@@ -6,4 +6,3 @@ A JavaFX gauge with a thermometer skin.
 
 
 <a href="https://github.com/beryx/jfxgauge/raw/master/doc/gaugeDemo.gif"><img src="https://github.com/beryx/jfxgauge/raw/master/doc/gaugeDemo-thumbnail.gif"></a>
-

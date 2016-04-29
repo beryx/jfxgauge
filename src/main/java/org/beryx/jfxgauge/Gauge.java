@@ -157,7 +157,7 @@ public abstract class Gauge<P extends Property<Number>> extends Control {
 	}
 
     /**
-	 * This implementation returns a {@link TextSkin}. 
+	 * This implementation returns a {@link ThermometerSkin}.
 	 * It may be overridden by subclasses, but the preferred way to set the skin is by setting the CSS property '-fx-skin'.
 	 */
 	@Override protected Skin<?> createDefaultSkin() {
