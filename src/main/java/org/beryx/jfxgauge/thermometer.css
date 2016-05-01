@@ -34,9 +34,6 @@
 }
 .gauge .value-not-available {
     visibility: hidden;
-    -fx-font-size: 24;
-    -fx-stroke: black;
-    -fx-fill: black;
 }
 
 .gauge .tube-inside {

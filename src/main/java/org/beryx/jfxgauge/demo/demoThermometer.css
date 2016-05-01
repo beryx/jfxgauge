@@ -16,95 +16,95 @@
 
 
 /* #################### */
-/* ##### GAUGE 0 ###### */
+/* ##### THERMO 0 ##### */
 /* #################### */
 
-/* No customizing for gauge0 */
+/* No customizing for thermo0 */
 
 
 /* #################### */
-/* ##### GAUGE 1 ###### */
+/* ##### THERMO 1 ##### */
 /* #################### */
-#gauge1 {
+#thermo1 {
   -fx-aspect-ratio: 1.0;
   -fx-range-position: left;
   -fx-threshold-position: left;
 }
-#gauge1 .tube-inside {
+#thermo1 .tube-inside {
     -fx-fill: #e0e0e0;
 }
-#gauge1 .tube-outside {
+#thermo1 .tube-outside {
     -fx-stroke: #008000;
     -fx-stroke-width: 1;
 }
-#gauge1 .tube-top {
+#thermo1 .tube-top {
     visibility: hidden;
 }
-#gauge1 .fluid-not-available, #gauge1 .tube-inside-not-available  {
+#thermo1 .fluid-not-available, #thermo1 .tube-inside-not-available  {
     -fx-fill: -gauge-default-not-available-inside-color;
 }
-#gauge1 .tube-outside-not-available {
+#thermo1 .tube-outside-not-available {
     -fx-stroke: -gauge-default-not-available-outside-color;
 }
 
 
 /* #################### */
-/* ##### GAUGE 2 ###### */
+/* ##### THERMO 2 ##### */
 /* #################### */
-#gauge2 {
+#thermo2 {
     -fx-aspect-ratio: 0.15;
     -fx-range-position: right;
     -fx-threshold-position: right;
 }
-#gauge2 .tube-inside {
+#thermo2 .tube-inside {
     -fx-fill: #f0f0ff;
 }
-#gauge2 .fluid-ok {
+#thermo2 .fluid-ok {
     -fx-fill: #60a060;
 }
-#gauge2 .fluid-warning {
+#thermo2 .fluid-warning {
     -fx-fill: #e0a080;
 }
-#gauge2 .fluid-error {
+#thermo2 .fluid-error {
     -fx-fill: #e04080;
 }
-#gauge2 .fluid-not-available, #gauge2 .tube-inside-not-available  {
+#thermo2 .fluid-not-available, #thermo2 .tube-inside-not-available  {
     -fx-fill: -gauge-default-not-available-inside-color;
 }
 
 
 /* #################### */
-/* ##### GAUGE 3 ###### */
+/* ##### THERMO 3 ##### */
 /* #################### */
 
-#gauge3 {
+#thermo3 {
     -text-color-ok: derive(-gauge-default-ok-color, -40%);
     -text-color-warning: derive(-gauge-default-warning-color, -40%);
     -text-color-error: derive(-gauge-default-error-color, -30%);
 }
-#gauge3 .value {
+#thermo3 .value {
     -fx-rotate: -135;
     -fx-translate-x: 50;
     -fx-translate-y: -120;
 }
-#gauge3 .value-ok {
+#thermo3 .value-ok {
     -fx-fill: -text-color-ok;
     -fx-stroke: -text-color-ok;
 }
-#gauge3 .value-warning {
+#thermo3 .value-warning {
     -fx-fill: -text-color-warning;
     -fx-stroke: -text-color-warning;
 }
-#gauge3 .value-error {
+#thermo3 .value-error {
     -fx-fill: -text-color-error;
     -fx-stroke: -text-color-error;
 }
-#gauge3 .threshold-text {
+#thermo3 .threshold-text {
     -fx-rotate: -135;
     -fx-translate-x: 30;
     -fx-translate-y: -4;
 }
-#gauge3 .range-text {
+#thermo3 .range-text {
     -fx-rotate: -135;
     -fx-translate-x: -2;
     -fx-translate-y: 10;
@@ -112,79 +112,79 @@
 
 
 /* #################### */
-/* ##### GAUGE 4 ###### */
+/* ##### THERMO 4 ##### */
 /* #################### */
-#gauge4 .tube-outside {
+#thermo4 .tube-outside {
     -fx-stroke: #00c080;
     -fx-fill: white;
 }
-#gauge4 .tube-inside {
+#thermo4 .tube-inside {
     -fx-fill: #ffffc0;
 }
-#gauge4 .value, #gauge4 .threshold-text, #gauge4 .range-text {
+#thermo4 .value, #thermo4 .threshold-text, #thermo4 .range-text {
     -fx-rotate: 180;
 }
-#gauge4 .threshold-text {
+#thermo4 .threshold-text {
     -fx-translate-x: 24;
 }
-#gauge4 .fluid-status0, #gauge4 .fluid-status2, #gauge4 .fluid-status4, #gauge4 .fluid-status6 {
+#thermo4 .fluid-status0, #thermo4 .fluid-status2, #thermo4 .fluid-status4, #thermo4 .fluid-status6 {
     -fx-fill: #2080ff;
 }
-#gauge4 .fluid-status1, #gauge4 .fluid-status3, #gauge4 .fluid-status5 {
+#thermo4 .fluid-status1, #thermo4 .fluid-status3, #thermo4 .fluid-status5 {
     -fx-fill: #ffc040;
 }
-#gauge4 .fluid-not-available, #gauge4 .tube-inside-not-available  {
+#thermo4 .fluid-not-available, #thermo4 .tube-inside-not-available  {
     -fx-fill: -gauge-default-not-available-inside-color;
 }
-#gauge4 .tube-outside-not-available {
+#thermo4 .tube-outside-not-available {
     -fx-stroke: -gauge-default-not-available-outside-color;
 }
 
 
 
 /* #################### */
-/* ##### GAUGE 5 ###### */
+/* ##### THERMO 5 ##### */
 /* #################### */
-#gauge5 {
+#thermo5 {
     -fx-aspect-ratio: 1.0;
 }
-#gauge5 .tube-inside {
+#thermo5 .tube-inside {
     -fx-fill: #ffffff;
 }
-#gauge5 .tube-outside {
+#thermo5 .tube-outside {
     -fx-stroke: black;
     -fx-stroke-width: 8;
 }
-#gauge5 .range-marking, #gauge5 .threshold-ok-marking, #gauge5 .threshold-warning-marking, #gauge5 .threshold-error-marking {
+#thermo5 .range-marking, #thermo5 .threshold-ok-marking, #thermo5 .threshold-warning-marking, #thermo5 .threshold-error-marking {
     -fx-stroke: #8080f0;
     -fx-stroke-width: 4;
 }
-#gauge5 .threshold-ok-text, #gauge5 .threshold-warning-text, #gauge5 .threshold-error-text {
+#thermo5 .threshold-ok-text, #thermo5 .threshold-warning-text, #thermo5 .threshold-error-text {
     -fx-fill: black;
 }
-#gauge5 .value, #gauge5 .threshold-text, #gauge5 .range-text {
+#thermo5 .value, #thermo5 .threshold-text, #thermo5 .range-text {
     -fx-rotate: -90;
 }
-#gauge5 .value {
+#thermo5 .value {
     -fx-translate-y: -130;
     -fx-stroke: black;
 }
-#gauge5 .threshold-text {
+#thermo5 .threshold-text {
     -fx-translate-x: 26;
 }
-#gauge5 .range-text {
+#thermo5 .range-text {
     -fx-translate-x: -10;
     -fx-translate-y: -8;
 }
-#gauge5 .fluid-ok {
+#thermo5 .fluid-ok {
     -fx-fill: #ff8020;
 }
-#gauge5 .fluid-warning {
+#thermo5 .fluid-warning {
     -fx-fill: #6080f0;
 }
-#gauge5 .fluid-error {
+#thermo5 .fluid-error {
     -fx-fill: #ffff89;
 }
-#gauge5 .fluid-not-available, #gauge5 .tube-inside-not-available  {
+#thermo5 .fluid-not-available, #thermo5 .tube-inside-not-available  {
     -fx-fill: -gauge-default-not-available-inside-color;
 }

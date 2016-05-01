@@ -20,8 +20,11 @@ import javafx.beans.property.Property;
 import javafx.scene.control.SkinBase;
 import javafx.scene.text.Text;
 
+import static org.beryx.jfxgauge.SkinUtil.*;
+
+
 /**
- * An extremely simple skin consisting only of a {@link Text} component.
+ * A simple skin consisting only of a {@link Text} component.
  */
 public class TextSkin extends SkinBase<Gauge<?>> {
     private final Gauge<?> gauge;
@@ -30,8 +33,10 @@ public class TextSkin extends SkinBase<Gauge<?>> {
     public TextSkin(Gauge<?> gauge) {
         super(gauge);
         this.gauge = gauge;
-        text.getStyleClass().setAll("text");
+        gauge.setCssResourceName("text.css");
+
         getChildren().setAll(text);
+
         Property<Number> valProp = gauge.valueProperty();
         text.textProperty().bind(Bindings.createStringBinding(() -> gauge.getFormattedValue(valProp.getValue()), valProp));
 
@@ -44,12 +49,11 @@ public class TextSkin extends SkinBase<Gauge<?>> {
     }
 
     private void redraw() {
-        if(gauge.isValueVisible()) {
-            text.getStyleClass().setAll("value");
-            String style = gauge.getStatus();
-            if(style != null) {
-                text.getStyleClass().add("value-" + style);
-            }
+        String status = gauge.getStatus();
+        setStyleClasses(gauge, status, "gauge");
+        if(gauge.getId() != null) {
+            gauge.getStyleClass().add(gauge.getId() + "-" + status);
         }
+        if(gauge.isValueVisible()) setStyleClasses(text, status, "value");
     }
 }

@@ -1,0 +1,132 @@
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.gauge {
+    -fx-skin: "org.beryx.jfxgauge.TextSkin";
+}
+
+/* #################### */
+/* ###### TEXT 0 ###### */
+/* #################### */
+
+/* No customizing for text0 */
+
+
+/* #################### */
+/* ###### TEXT 1 ###### */
+/* #################### */
+
+#text1 {
+    -fx-shape: "M64,0 l -20, 40 l -44, 8 l 32, 28 l -8, 44 l 40, -20 l 40, 20 l -8, -44 l 32, -28 l -44, -8Z";
+}
+
+
+/* #################### */
+/* ###### TEXT 2 ###### */
+/* #################### */
+
+#text2 .value {
+    -fx-translate-x: 50;
+}
+#text2 {
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+    -fx-background-position: left center;
+    -fx-background-repeat: no-repeat;
+}
+.text2-ok {
+    -fx-background-image: url("ok.png");
+    -fx-background-size: 120;
+}
+.text2-warning {
+    -fx-background-image: url("warning.png");
+    -fx-background-size: 120;
+}
+.text2-error {
+    -fx-background-image: url("error.png");
+    -fx-background-size: 120;
+}
+.text2-not-available {
+    -fx-background-image: url("not-available.png");
+    -fx-background-size: 160;
+}
+
+
+/* #################### */
+/* ###### TEXT 3 ###### */
+/* #################### */
+
+#text3 {
+    -fx-shape: "M2,0 h 2 l -4, -4 l -4, 4 h 2 v 4 h 4Z";
+}
+#text3 .value {
+    -fx-font-size: 24;
+    -fx-font-weight: normal;
+}
+#text3 .value-status0 {
+    -fx-rotate: 135;
+}
+.text3-status0 {
+    -fx-rotate: -135;
+    -fx-background-color: #c00000;
+}
+
+#text3 .value-status1 {
+    -fx-rotate: 90;
+}
+.text3-status1 {
+    -fx-rotate: -90;
+    -fx-background-color: #ff0000;
+}
+
+#text3 .value-status2 {
+    -fx-rotate: 45;
+}
+.text3-status2 {
+    -fx-rotate: -45;
+    -fx-background-color: #e08000;
+}
+
+#text3 .value-status3 {
+    -fx-rotate: 0;
+}
+.text3-status3 {
+    -fx-rotate: 0;
+    -fx-background-color: #e0e000;
+}
+
+#text3 .value-status4 {
+    -fx-rotate: -45;
+}
+.text3-status4 {
+    -fx-rotate: 45;
+    -fx-background-color: #80e000;
+}
+
+#text3 .value-status5 {
+    -fx-rotate: -90;
+}
+.text3-status5 {
+    -fx-rotate: 90;
+    -fx-background-color: #00c000;
+}
+
+#text3 .value-status6 {
+    -fx-rotate: -135;
+}
+.text3-status6 {
+    -fx-rotate: 135;
+    -fx-background-color: #008000;
+}

@@ -35,6 +35,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
+import static org.beryx.jfxgauge.SkinUtil.*;
+
 public class ThermometerSkin extends SkinBase<Gauge<?>>{
 	private static final double DEFAULT_ASPECT_RATIO = 0.6;
     private static final HorizontalDirection DEFAULT_RANGE_POSITION = HorizontalDirection.RIGHT;
@@ -110,6 +112,7 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
 
     private void setAllStyleClasses() {
         String status = gauge.getStatus();
+        setStyleClasses(gauge, status, "gauge");
         setStyleClasses(pane, status, "pane");
         setStyleClasses(tubeTop, status, "tube-inside", "tube-outside", "tube-top");
         setStyleClasses(tubeBottom, status, "tube-outside", "fluid", "tube-bottom");
@@ -117,15 +120,6 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
         setStyleClasses(tubeRightWall, status, "tube-outside");
         setStyleClasses(tubeBody, status, "tube-inside", "tube-body");
         setStyleClasses(fluidBody, status, "fluid");
-    }
-
-    private void setStyleClasses(Node node, String status, String... styles) {
-        node.getStyleClass().setAll(styles);
-        if(status != null) {
-            for(String style : styles) {
-                node.getStyleClass().add(style + "-" + status);
-            }
-        }
     }
 
     private void computeSizes() {
