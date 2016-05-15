@@ -66,12 +66,15 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
     private StyleableObjectProperty<HorizontalDirection> rangePosition;
     private StyleableObjectProperty<HorizontalDirection> thresholdPosition;
 
-    private static final StyleConverter HDIR_CONVERTER = StyleConverter.getEnumConverter(HorizontalDirection.class);
+    @SuppressWarnings("rawtypes")
+	private static final StyleConverter HDIR_CONVERTER = StyleConverter.getEnumConverter(HorizontalDirection.class);
 
     private static class StyleableProperties {
         private static final SkinPropertyBasedCssMetaData<Gauge<?>, Number> ASPECT_RATIO = CssHelper.createSkinMetaData("-fx-aspect-ratio", StyleConverter.getSizeConverter(), "aspectRatio", DEFAULT_ASPECT_RATIO);
-        private static final SkinPropertyBasedCssMetaData<Gauge<?>, HorizontalDirection> RANGE_POSITION = CssHelper.createSkinMetaData("-fx-range-position", HDIR_CONVERTER, "rangePosition", DEFAULT_RANGE_POSITION);
-        private static final SkinPropertyBasedCssMetaData<Gauge<?>, HorizontalDirection> THRESHOLD_POSITION = CssHelper.createSkinMetaData("-fx-threshold-position", HDIR_CONVERTER, "thresholdPosition", DEFAULT_THRESHOLD_POSITION);
+        @SuppressWarnings("unchecked")
+		private static final SkinPropertyBasedCssMetaData<Gauge<?>, HorizontalDirection> RANGE_POSITION = CssHelper.createSkinMetaData("-fx-range-position", HDIR_CONVERTER, "rangePosition", DEFAULT_RANGE_POSITION);
+        @SuppressWarnings("unchecked")
+		private static final SkinPropertyBasedCssMetaData<Gauge<?>, HorizontalDirection> THRESHOLD_POSITION = CssHelper.createSkinMetaData("-fx-threshold-position", HDIR_CONVERTER, "thresholdPosition", DEFAULT_THRESHOLD_POSITION);
         @SuppressWarnings("unchecked")
 		private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES = CssHelper.createCssMetaDataList(SkinBase.getClassCssMetaData(), ASPECT_RATIO, RANGE_POSITION, THRESHOLD_POSITION);
     }

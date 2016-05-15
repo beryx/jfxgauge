@@ -18,7 +18,7 @@ package org.beryx.jfxgauge.demo;
 import org.beryx.jfxgauge.Gauge;
 
 public class DemoUtil {
-    public static void initGauges(Gauge... gauges) {
+    public static void initGauges(Gauge<?>... gauges) {
         int factor = 1;
         for(Gauge<?> gauge : gauges) {
             double lowVal = gauge.lowValueProperty().getValue().doubleValue();

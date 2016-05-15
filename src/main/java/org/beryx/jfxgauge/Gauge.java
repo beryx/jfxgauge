@@ -15,7 +15,6 @@
  */
 package org.beryx.jfxgauge;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +29,7 @@ public abstract class Gauge<P extends Property<Number>> extends Control {
     private final ReadOnlyStringProperty status = statusWrapper.getReadOnlyProperty();
     private final SimpleStringProperty imposedStatus = new SimpleStringProperty();
     private final SimpleStringProperty lowestStatus = new SimpleStringProperty();
-    private final SimpleListProperty<Threshold> thresholds = new SimpleListProperty(FXCollections.observableArrayList());
+    private final SimpleListProperty<Threshold> thresholds = new SimpleListProperty<>(FXCollections.observableArrayList());
     private final SimpleBooleanProperty valueVisible = new SimpleBooleanProperty(true);
     private final SimpleBooleanProperty rangeVisible = new SimpleBooleanProperty(true);
     private final SimpleBooleanProperty thresholdsVisible = new SimpleBooleanProperty(true);
