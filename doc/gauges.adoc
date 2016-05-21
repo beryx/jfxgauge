@@ -1,0 +1,57 @@
+[[gauges]]
+= Gauges
+
+A gauge is a JavaFX control.
+The library offers two types of gauges: for int and for double values.
+They are implemented by the classes `org.beryx.jfxgauge.IntGauge` and `org.beryx.jfxgauge.DoubleGauge`.
+Both classes extend the abstract base class `org.beryx.jfxgauge.Gauge`.
+
+A gauge has a series of JavaFX properties, as shown in the table below.
+
+
+.Gauge properties
+[cols="1,1,3v"]
+|===
+| Property | Type | Description
+
+| value | int / double | the value indicated by the gauge
+| lowValue | int / double | the lowest value that can be displayed by the gauge
+| highValue | int / double | the highest value that can be displayed by the gauge
+| valueFormat | String | the format used to display the values
+(default format: `"%d"` for IntGauge; `"%.2f"` for DoubleGauge)
+| status | String | read-only: computed based on _value_ and _thresholds_;
+the computed status may be overridden by _imposedStatus_;
+used by skins to style the gauge;
+(see details below)
+| imposedStatus | String | if not null, it overrides the computed status;
+(example: imposing the status as _not-available_)
+| lowestStatus | String | the status corresponding to values below the first threshold
+| thresholds | List<Threshold> | the list of thresholds used to compute the status;
+each threshold entry is a pair <status, value>
+| valueVisible| boolean | a hint to the skin to display the gauge value
+| rangeVisible | boolean | a hint to the skin to display the _lowValue_ and _highValue_
+| thresholdsVisible | boolean | a hint to the skin to display the threshold values
+
+|===
+
+The status of a gauge determines its visual appearance.
+A skin uses the status to style the gauge, by adding status-related style classes to its components.
+
+For example, if the gauge status is _warning_, a skin might add the style class `value-warning` to the text component used to display the value.
+By adjusting the CSS properties of the `value-warning` style class, you can customize the visual apearance of the gauge in _warning_ state.
+Consult the <<skins.adoc#section-start,Skins>> section for details about the style classes used by each skin.
+
+By default, the status of a gauge is determined by the highest threshold with a value below the current value.
+If no such threshold exists, because the current value is below the one corresponding to the lowest threshold, the status is set to _lowestStatus_.
+
+A frequent use case involves three acceptability ranges for the gauge values, corresponding to the _ok_, _warning_ and _error_ states.
+For this situation, the `Gauge` class offers the convenience method `configureWarningAndErrorThresholds`, which takes two numerical arguments: _warningThreshold_ and _errorThreshold_.
+
+Consider an application where the process that updates the gauge values is temporarily out of order.
+In this case, the status determined using the _value_ property and the thresholds no longer reflects the reality and you may want to override it with a status that signals the unavailability of the gauge.
+This can be done by setting the _imposedStatus_ property.
+
+There are no restrictions on the number of statuses of a gauge.
+You are also free to choose whatever names you want for the gauge statuses, as long as they are https://www.w3.org/TR/CSS2/syndata.html#tokenization[valid CSS names^].
+
+As a convenience, all skins have CSS stylesheets that customize the following statuses: _ok_, _warning_, _error_ and _not-available_.

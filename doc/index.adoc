@@ -1,0 +1,17 @@
+= JFXGauge
+:author: Serban Iordache
+:revnumber: {project-version}
+:toc: left
+:toclevels: 3
+:imagesdir: img
+:data-uri:
+:caption:
+
+:leveloffset: +1
+
+include::introduction.adoc[]
+include::getting_started.adoc[]
+include::gauges.adoc[]
+include::skins.adoc[]
+
+:leveloffset: -1

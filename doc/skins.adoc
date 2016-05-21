@@ -1,0 +1,163 @@
+[[skins]]
+= Skins
+[[section-start]]
+
+JFXGauge currently offers a text and a thermometer skin.
+You can use the CSS property _-fx-skin_ to specify which skin should be used.
+If you don't set this property, the gauge will use the thermometer skin.
+
+
+== The text skin
+
+[source,css]
+.Configuration via CSS
+----
+.gauge {
+    -fx-skin: "org.beryx.jfxgauge.TextSkin";
+}
+----
+
+The text skin consists only of a Text control, as can be seen in the figure below.
+
+image::textSkin.png[]
+
+
+.CSS styling
+[cols="1v,2v,5v"]
+|===
+| CSS style class | Component | Example
+
+| gauge
+gauge-<__status__> | gauge |
+.gauge {
+    -fx-effect: innershadow(two-pass-box , black, 40, 0.1, 0, 0);
+}
+.gauge-warning {
+    -fx-background-color: orange;
+}
+| <__gauge-id__>-<__status__> | gauge |
+.text2-ok {
+    -fx-background-image: url("ok.png");
+    -fx-background-size: 120;
+}
+| value
+value-<__status__> | text |
+#text2 .value {
+    -fx-underline: true;
+}
+.gauge .value-error {
+  -fx-fill: #cc5533;
+}
+|===
+
+
+
+== The thermometer skin
+
+.Configuration via CSS
+----
+.gauge {
+    -fx-skin: "org.beryx.jfxgauge.ThermometerSkin";
+}
+----
+
+The figure below shows the main graphical components handled by the thermometer skin.
+
+image::thermoSkinComponents.png[]
+
+The figure below shows the graphical components associated with text and markings.
+
+image::thermoSkinMarkings.png[]
+
+.CSS styling
+[cols="1v,2v,5v"]
+|===
+| CSS style class | Component | Example
+
+| gauge
+gauge-<__status__> | gauge | .gauge-warning {
+    -fx-background-color: orange;
+}
+| pane
+pane-<__status__> | pane | .gauge .pane-not-available {
+    -fx-opacity: 0.3;
+}
+| value
+value-<__status__> | text | .gauge .value-error {
+  -fx-fill: #cc5533;
+}
+| tube-top
+tube-top-<__status__> | tubeTop |
+#thermo1 .tube-top {
+    visibility: hidden;
+}
+| tube-bottom
+tube-bottom-<__status__> | tubeBottom |
+#thermo1 .tube-bottom {
+    -fx-effect: innershadow(two-pass-box , black, 40, 0.1, 0, 0);
+    -fx-opacity: 0.8;
+}
+| tube-body
+tube-body-<__status__> | tubeBody |
+#thermo0 .tube-body {
+    -fx-fill: pink;
+}
+| fluid
+fluid-<__status__> | tubeFluid
+tubeBottom |
+#thermo1 .fluid-not-available {
+    -fx-fill: #cccccc;
+}
+| tube-outside
+tube-outside-<__status__> | tubeTop
+tubeBottom
+tubeLeftWall
+tubeRightWall |
+#thermo1 .tube-outside-not-available {
+    -fx-stroke: #cccccc;
+}
+| tube-inside
+tube-inside-<__status__> | tubeTop
+tubeBody |
+#thermo2 .tube-inside {
+    -fx-fill: #f0f0ff;
+}
+| range-text | rangeMarkingText |
+#thermo3 .range-text {
+    -fx-rotate: -135;
+    -fx-translate-x: -2;
+    -fx-translate-y: 10;
+}
+| range-marking | rangeMarkingLine |
+#thermo5 .range-marking {
+    -fx-stroke: #8080f0;
+    -fx-stroke-width: 4;
+}
+| threshold-text
+threshold-text-<__status__> | thresholdMarkingText |
+#thermo5 .threshold-warning-text {
+    -fx-fill: orange;
+}
+| threshold-marking
+threshold-marking-<__status__> | thresholdMarkingLine |
+#thermo5 .threshold-warning-marking {
+    -fx-stroke: #f0f080;
+    -fx-stroke-width: 4;
+}
+|===
+
+
+.Custom CSS properties
+[cols="1v,1v,3v,5v"]
+|===
+| Property | Type | Description | Example
+
+| aspectRatio | number | top radius / bottom radius .3+| #thermo3 {
+  -fx-aspect-ratio: 0.2;
+  -fx-range-position: right;
+  -fx-threshold-position: left;
+}
+
+| rangePosition | left {vbar} right | where to place the range markings
+| thresholdPosition | left {vbar} right | where to place the threshold markings
+|===

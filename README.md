@@ -7,6 +7,6 @@ A JavaFX gauge currently providing a thermometer and a text skin.
 
 Thermometer Skin |Text Skin
 -----------------|----------
-<a href="https://github.com/beryx/jfxgauge/raw/master/doc/thermoDemo.gif"><img src="https://github.com/beryx/jfxgauge/raw/master/doc/thermoDemo-thumbnail.gif"></a> | <a href="https://github.com/beryx/jfxgauge/raw/master/doc/textDemo.gif"><img src="https://github.com/beryx/jfxgauge/raw/master/doc/textDemo-thumbnail.gif"></a>
+<a href="https://github.com/beryx/jfxgauge/raw/master/doc/img/thermoDemo.gif"><img src="https://github.com/beryx/jfxgauge/raw/master/doc/img/thermoDemo-thumbnail.gif"></a> | <a href="https://github.com/beryx/jfxgauge/raw/master/doc/img/textDemo.gif"><img src="https://github.com/beryx/jfxgauge/raw/master/doc/img/textDemo-thumbnail.gif"></a>
 
 
