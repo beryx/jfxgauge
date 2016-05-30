@@ -10,4 +10,4 @@ Thermometer Skin |Text Skin
 <a href="https://github.com/beryx/jfxgauge/raw/master/doc/img/thermoDemo.gif"><img src="https://github.com/beryx/jfxgauge/raw/master/doc/img/thermoDemo-thumbnail.gif"></a> | <a href="https://github.com/beryx/jfxgauge/raw/master/doc/img/textDemo.gif"><img src="https://github.com/beryx/jfxgauge/raw/master/doc/img/textDemo-thumbnail.gif"></a>
 
 
-To learn how to use it, visit http://jfxgauge.beryx.org.
+Try the demo application included in the [release](https://github.com/beryx/jfxgauge/releases/latest), read the [documentation](http://jfxgauge.beryx.org) and use JFXGauge in your projects!
