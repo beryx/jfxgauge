@@ -8,10 +8,10 @@ Two skins are currently available for the gauges: a text and a thermometer skin.
 --
 [.left.text-center]
 .Text skin
-image::textDemo-thumbnail.gif[role="thumb"]
+image::textDemo-thumbnail.gif[role="thumb" link="https://github.com/beryx/jfxgauge/raw/master/doc/textDemo.gif"]
 [.left.text-center]
 &nbsp;
 [.left.text-center]
 .Thermometer skin
-image::thermoDemo-thumbnail.gif[role="thumb"]
+image::thermoDemo-thumbnail.gif[role="thumb" link="https://github.com/beryx/jfxgauge/raw/master/doc/thermoDemo.gif"]
 --
