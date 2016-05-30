@@ -17,7 +17,7 @@ If you don't set this property, the gauge will use the thermometer skin.
 }
 ----
 
-The text skin consists only of a Text control, as can be seen in the figure below.
+The text skin consists only of a Text component, as can be seen in the figure below.
 
 image::textSkin.png[]
 

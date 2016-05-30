@@ -1,7 +1,7 @@
 [[getting_started]]
 = Getting Started
 
-NOTE: You need Java 8 update 40 or newer in order to use JFXGauge.
+CAUTION: You need Java 8 update 40 or newer in order to use JFXGauge.
 
 == Installation
 JFXGauge is available in Maven Central and JCenter.

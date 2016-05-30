@@ -15,3 +15,5 @@ image::textDemo-thumbnail.gif[role="thumb" link="https://github.com/beryx/jfxgau
 .Thermometer skin
 image::thermoDemo-thumbnail.gif[role="thumb" link="https://github.com/beryx/jfxgauge/raw/master/doc/img/thermoDemo.gif"]
 --
+
+NOTE: The source code is available on https://github.com/beryx/jfxgauge[GitHub].
