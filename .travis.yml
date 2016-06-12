@@ -15,4 +15,4 @@ cache:
     - $HOME/.gradle
 
 script:
-  - ./gradlew build
+  - ./travis-build.sh

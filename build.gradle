@@ -8,6 +8,7 @@ plugins {
     id "com.github.ben-manes.versions" version "0.11.3"
     id "com.jfrog.bintray" version "1.6"
     id "org.asciidoctor.convert" version "1.5.3"
+    id 'org.ajoberstar.github-pages' version '1.5.0'
     id "com.github.hierynomus.license" version "0.12.1"
     id "net.saliman.properties" version "1.4.4"
     id 'com.gradle.build-receipt' version '1.0'
@@ -98,8 +99,12 @@ signing {
     sign configurations.archives
 }
 
+def isPublishTask(task) {
+  task.name.startsWith('publish') && (task.name != 'publishGhPages')
+}
+
 signArchives {
-  onlyIf { gradle.taskGraph.allTasks.findAll {task -> task.name.startsWith('publish')} }
+  onlyIf { gradle.taskGraph.allTasks.findAll {task -> isPublishTask(task)} }
 }
 
 dependencies {
@@ -188,6 +193,19 @@ asciidoctor {
              'data-uri': '',
              linkattrs: true,
              linkcss: true
+}
+githubPages {
+  repoUri = 'https://github.com/sandboxx/test-travis-asciidoc-gh-pages.git'
+
+  credentials {
+    username = System.getenv('GH_PAGES_ACCESS_TOKEN')
+    password = ''
+  }
+
+  pages {
+    from file("${asciidoctor.outputDir.path}/html5")
+    from file('doc/CNAME')
+  }
 }
 
 publishing {
@@ -316,7 +334,7 @@ def readFromConsole(header, prompt, isPassword) {
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
-    if (gradle.taskGraph.allTasks.findAll {task -> task.name.startsWith('publish')}) {
+    if (gradle.taskGraph.allTasks.findAll {task -> isPublishTask(task)}) {
         def password = readPasswordFromConsole('Please enter your signing credentials', 'PGP Private Key Password')
         ext."signing.keyId" = signingKeyId
         ext."signing.secretKeyRingFile" = signingSecretKeyRingFile
