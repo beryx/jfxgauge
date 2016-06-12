@@ -195,7 +195,7 @@ asciidoctor {
              linkcss: true
 }
 githubPages {
-  repoUri = 'https://github.com/sandboxx/test-travis-asciidoc-gh-pages.git'
+  repoUri = 'https://github.com/beryx/jfxgauge.git'
 
   credentials {
     username = System.getenv('GH_PAGES_ACCESS_TOKEN')
