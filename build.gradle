@@ -8,7 +8,7 @@ plugins {
     id "com.github.ben-manes.versions" version "0.11.3"
     id "com.jfrog.bintray" version "1.6"
     id "org.asciidoctor.convert" version "1.5.3"
-    id 'org.ajoberstar.github-pages' version '1.5.0'
+    id 'org.ajoberstar.github-pages' version '1.5.1'
     id "com.github.hierynomus.license" version "0.12.1"
     id "net.saliman.properties" version "1.4.4"
     id 'com.gradle.build-receipt' version '1.0'
@@ -203,8 +203,21 @@ githubPages {
   }
 
   pages {
-    from file("${asciidoctor.outputDir.path}/html5")
-    from file('doc/CNAME')
+    def pgType = project.hasProperty('ghPageType') ? ghPageType : 'latest'
+    if(pgType == 'init') {
+      from file("ghpages")
+    } else {
+      from file("${asciidoctor.outputDir.path}/html5")
+    }
+    def docDir = Boolean.valueOf(jfxgaugeReleaseBuild) ? 'releases' : 'snapshots'
+    if(pgType == 'init') {
+      into "."
+    } else if(pgType == 'version') {
+      publishGhPages.enabled = (docDir != 'snapshots')
+      into "$docDir/$jfxgaugeVersion"
+    } else {
+      into "$docDir/latest"
+    }
   }
 }
 
