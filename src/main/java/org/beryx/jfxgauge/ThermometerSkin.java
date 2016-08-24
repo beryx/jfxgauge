@@ -15,12 +15,8 @@
  */
 package org.beryx.jfxgauge;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.guigarage.css.CssHelper;
 import com.guigarage.css.SkinPropertyBasedCssMetaData;
-
 import javafx.css.CssMetaData;
 import javafx.css.StyleConverter;
 import javafx.css.Styleable;
@@ -35,22 +31,27 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
-import static org.beryx.jfxgauge.SkinUtil.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.beryx.jfxgauge.SkinUtil.setStyleClasses;
 
 public class ThermometerSkin extends SkinBase<Gauge<?>>{
-	private static final double DEFAULT_ASPECT_RATIO = 0.6;
+    private static final double DEFAULT_ASPECT_RATIO = 0.6;
     private static final HorizontalDirection DEFAULT_RANGE_POSITION = HorizontalDirection.RIGHT;
     private static final HorizontalDirection DEFAULT_THRESHOLD_POSITION = HorizontalDirection.LEFT;
 
     private final Gauge<?> gauge;
 
-	private final Pane pane = new Pane();
-	private final Circle tubeTop = new Circle();
-	private final Circle tubeBottom = new Circle();
-	private final Rectangle tubeBody = new Rectangle();
-	private final Line tubeLeftWall = new Line();
-	private final Line tubeRightWall = new Line();	
-	private final Rectangle fluidBody = new Rectangle();
+    private final Pane pane = new Pane();
+    private final Circle tubeTop = new Circle();
+    private final Circle tubeBottom = new Circle();
+    private final Rectangle tubeBody = new Rectangle();
+    private final Line tubeLeftWall = new Line();
+    private final Line tubeRightWall = new Line();
+    private final Rectangle fluidBody = new Rectangle();
 
     private final List<Node> markings = new ArrayList<>();
 
@@ -67,35 +68,44 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
     private StyleableObjectProperty<HorizontalDirection> thresholdPosition;
 
     @SuppressWarnings("rawtypes")
-	private static final StyleConverter HDIR_CONVERTER = StyleConverter.getEnumConverter(HorizontalDirection.class);
+    private static final StyleConverter HDIR_CONVERTER = StyleConverter.getEnumConverter(HorizontalDirection.class);
 
     private static class StyleableProperties {
         private static final SkinPropertyBasedCssMetaData<Gauge<?>, Number> ASPECT_RATIO = CssHelper.createSkinMetaData("-fx-aspect-ratio", StyleConverter.getSizeConverter(), "aspectRatio", DEFAULT_ASPECT_RATIO);
         @SuppressWarnings("unchecked")
-		private static final SkinPropertyBasedCssMetaData<Gauge<?>, HorizontalDirection> RANGE_POSITION = CssHelper.createSkinMetaData("-fx-range-position", HDIR_CONVERTER, "rangePosition", DEFAULT_RANGE_POSITION);
+        private static final SkinPropertyBasedCssMetaData<Gauge<?>, HorizontalDirection> RANGE_POSITION = CssHelper.createSkinMetaData("-fx-range-position", HDIR_CONVERTER, "rangePosition", DEFAULT_RANGE_POSITION);
         @SuppressWarnings("unchecked")
-		private static final SkinPropertyBasedCssMetaData<Gauge<?>, HorizontalDirection> THRESHOLD_POSITION = CssHelper.createSkinMetaData("-fx-threshold-position", HDIR_CONVERTER, "thresholdPosition", DEFAULT_THRESHOLD_POSITION);
+        private static final SkinPropertyBasedCssMetaData<Gauge<?>, HorizontalDirection> THRESHOLD_POSITION = CssHelper.createSkinMetaData("-fx-threshold-position", HDIR_CONVERTER, "thresholdPosition", DEFAULT_THRESHOLD_POSITION);
         @SuppressWarnings("unchecked")
-		private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES = CssHelper.createCssMetaDataList(SkinBase.getClassCssMetaData(), ASPECT_RATIO, RANGE_POSITION, THRESHOLD_POSITION);
+        private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES = CssHelper.createCssMetaDataList(SkinBase.getClassCssMetaData(), ASPECT_RATIO, RANGE_POSITION, THRESHOLD_POSITION);
     }
-	
-	public ThermometerSkin(Gauge<?> gauge) {
-		super(gauge);
+
+    public ThermometerSkin(Gauge<?> gauge) {
+        super(gauge);
         this.gauge = gauge;
-		gauge.setCssResourceName("thermometer.css");
+        gauge.setCssResourceName("thermometer.css");
 
-		pane.getChildren().setAll(tubeLeftWall, tubeRightWall, tubeBottom, tubeTop, tubeBody, fluidBody);
-		getChildren().add(pane);
+        pane.getChildren().setAll(tubeLeftWall, tubeRightWall, tubeBottom, tubeTop, tubeBody, fluidBody);
+        getChildren().add(pane);
 
-		gauge.widthProperty().addListener(obs -> redraw());
-        gauge.heightProperty().addListener(obs -> redraw());
-        gauge.valueProperty().addListener(ev -> redraw());
-        gauge.statusProperty().addListener(ev -> redraw());
-        
+        Arrays.asList(
+                gauge.valueProperty(),
+                gauge.lowValueProperty(),
+                gauge.highValueProperty(),
+                gauge.statusProperty(),
+                gauge.lowestStatusProperty(),
+                gauge.thresholdsProperty(),
+                gauge.valueVisibleProperty(),
+                gauge.rangeVisibleProperty(),
+                gauge.thresholdsProperty(),
+                gauge.widthProperty(),
+                gauge.heightProperty()
+        ).forEach(prop -> prop.addListener(obs -> redraw()));
+
         redraw();
-	}
+    }
 
-	private void redraw() {
+    private void redraw() {
         setAllStyleClasses();
 
         computeSizes();
@@ -107,11 +117,11 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
         markings.clear();
 
         drawContainer();
-		if(highVal > lowVal) drawFluid();
+        if(highVal > lowVal) drawFluid();
         if(gauge.isRangeVisible()) drawRange();
         if(gauge.getThresholdsVisible()) drawThresholds();
         if(gauge.isValueVisible()) drawValue();
-	}
+    }
 
     private void setAllStyleClasses() {
         String status = gauge.getStatus();
@@ -229,7 +239,7 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
         return Math.min(maxVal, Math.max(minVal, value));
     }
 
-	public double getAspectRatio() {
+    public double getAspectRatio() {
         return aspectRatio == null ? DEFAULT_ASPECT_RATIO : aspectRatio.get().doubleValue();
     }
     public void setAspectRatio(double newAspectRatio) {
@@ -275,8 +285,8 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
     public List<CssMetaData<? extends Styleable, ?>> getCssMetaData() {
         return getClassCssMetaData();
     }
- 
+
     public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
         return StyleableProperties.STYLEABLES;
-    }	
+    }
 }
