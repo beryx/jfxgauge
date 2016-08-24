@@ -90,14 +90,9 @@ public class ThermometerSkin extends SkinBase<Gauge<?>>{
 
         Arrays.asList(
                 gauge.valueProperty(),
-                gauge.lowValueProperty(),
-                gauge.highValueProperty(),
                 gauge.statusProperty(),
-                gauge.lowestStatusProperty(),
-                gauge.thresholdsProperty(),
                 gauge.valueVisibleProperty(),
                 gauge.rangeVisibleProperty(),
-                gauge.thresholdsProperty(),
                 gauge.widthProperty(),
                 gauge.heightProperty()
         ).forEach(prop -> prop.addListener(obs -> redraw()));

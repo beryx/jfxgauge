@@ -20,6 +20,8 @@ import javafx.beans.property.Property;
 import javafx.scene.control.SkinBase;
 import javafx.scene.text.Text;
 
+import java.util.Arrays;
+
 import static org.beryx.jfxgauge.SkinUtil.*;
 
 
@@ -40,10 +42,14 @@ public class TextSkin extends SkinBase<Gauge<?>> {
         Property<Number> valProp = gauge.valueProperty();
         text.textProperty().bind(Bindings.createStringBinding(() -> gauge.getFormattedValue(valProp.getValue()), valProp));
 
-        gauge.widthProperty().addListener(obs -> redraw());
-        gauge.heightProperty().addListener(obs -> redraw());
-        gauge.valueProperty().addListener(ev -> redraw());
-        gauge.statusProperty().addListener(ev -> redraw());
+        Arrays.asList(
+                gauge.valueProperty(),
+                gauge.statusProperty(),
+                gauge.valueVisibleProperty(),
+                gauge.rangeVisibleProperty(),
+                gauge.widthProperty(),
+                gauge.heightProperty()
+        ).forEach(prop -> prop.addListener(obs -> redraw()));
 
         redraw();
     }

@@ -26,7 +26,14 @@ public class DoubleGauge extends Gauge<SimpleDoubleProperty> {
     private final SimpleStringProperty valueFormat = new SimpleStringProperty("%.2f");
 
     public DoubleGauge() {
-        statusWrapper.bind(Bindings.createStringBinding(this::computeStatus, value, imposedStatusProperty()));
+		statusWrapper.bind(Bindings.createStringBinding(this::computeStatus,
+				value,
+				lowValue,
+				highValue,
+				lowestStatusProperty(),
+				thresholdsProperty(),
+				imposedStatusProperty()
+		));
     }
 
 	@Override
