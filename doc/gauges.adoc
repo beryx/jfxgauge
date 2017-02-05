@@ -38,7 +38,7 @@ The status of a gauge determines its visual appearance.
 A skin uses the status to style the gauge, by adding status-related style classes to its components.
 
 For example, if the gauge status is _warning_, a skin might add the style class `value-warning` to the text component used to display the value.
-By adjusting the CSS properties of the `value-warning` style class, you can customize the visual apearance of the gauge in _warning_ state.
+By adjusting the CSS properties of the `value-warning` style class, you can customize the visual appearance of the gauge in _warning_ state.
 Consult the <<skins.adoc#section-start,Skins>> section for details about the style classes used by each skin.
 
 By default, the status of a gauge is determined by the highest threshold with a value below the current value.
