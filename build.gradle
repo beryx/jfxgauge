@@ -2,17 +2,21 @@ import org.apache.tools.ant.filters.ReplaceTokens
 import org.gradle.plugins.signing.Sign
 
 plugins {
+    id 'application'
     id 'idea'
+    id 'signing'
     id 'maven-publish'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
     id "com.github.ethankhall.semantic-versioning" version "1.1.0"
     id "com.github.ben-manes.versions" version "0.13.0"
     id "com.jfrog.bintray" version "1.7.1"
     id "org.asciidoctor.convert" version "1.5.3"
     id 'org.ajoberstar.github-pages' version '1.6.0-rc.1'
-    id "com.github.hierynomus.license" version "0.13.1"
+    id "com.github.hierynomus.license" version "0.15.0"
     id "net.saliman.properties" version "1.4.5"
     id 'com.github.jk1.dependency-license-report' version '0.3.5'
 }
+
 
 project.version.with {
     major = jfxgaugeVersionMajor as int
@@ -27,7 +31,6 @@ ext.jfxgaugeVersion = project.version as String
 
 repositories {
   jcenter()
-  mavenCentral()
 }
 
 def pomConfig = {
@@ -36,7 +39,6 @@ def pomConfig = {
         developer {
             id "siordache"
             name "Serban Iordache"
-            // email "name@example.com"
         }
     }
     scm {
@@ -50,23 +52,12 @@ tasks.withType(Javadoc) {
     options.addStringOption('Xdoclint:all,-syntax,-missing', '-quiet')
 }
 
-apply plugin: 'application'
-apply plugin: 'java'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'findbugs'
-apply plugin: 'com.github.ben-manes.versions'
-apply plugin: 'signing'
-apply plugin: 'com.github.hierynomus.license'
-apply plugin: 'com.github.jk1.dependency-license-report'
-
-
 repositories {
     jcenter()
     mavenCentral()
 }
 
-sourceCompatibility = 1.8
+sourceCompatibility = 11
 group = 'org.beryx.jfxgauge'
 version = jfxgaugeVersion
 
@@ -80,8 +71,9 @@ configurations {
 
 license {
     header rootProject.file("license-header.txt")
-    skipExistingHeaders true
-    ignoreFailures false
+    skipExistingHeaders = true
+    ignoreFailures = false
+    exclude "**/guigarage/**"
 }
 
 signing {
@@ -98,14 +90,14 @@ signArchives {
 
 dependencies {
   compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
-  compile 'com.guigarage:css-helper:0.7'
-
-  provided 'com.google.code.findbugs:findbugs-annotations:3.0.1'
 
   testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
   testCompile 'junit:junit:4.12'
 }
 
+javafx {
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
 
 mainClassName = 'org.beryx.jfxgauge.demo.GaugeDemo'
 
@@ -125,10 +117,6 @@ applicationDistribution.from(".") {
 
 sourceSets.main.compileClasspath += configurations.provided
 
-findbugs {
-    effort = "max"
-    excludeFilter = file("findbugsExclude.xml")
-}
 jar {
     manifest {
         attributes 'Main-Class': 'org.beryx.jfxgauge.demo.GaugeDemo',
@@ -243,74 +231,16 @@ publishing {
     }
 }
 
-task "create-dirs" << {
-   sourceSets*.java.srcDirs*.each { it.mkdirs() }
-   sourceSets*.resources.srcDirs*.each { it.mkdirs() }
-}
-
-
-///////////  ECLIPSE  //////////////////
-def resourcesDir = 'src/main/resources/'
-eclipse.classpath.file {
-    beforeMerged { classpath ->
-        classpath.entries.removeAll()
-    }
-    whenMerged { classpath ->
-        classpath.entries.findAll { entry -> entry.kind == 'lib' }*.exported = true
-        classpath.entries.removeAll { entry -> entry.kind == 'src' && entry.path.contains('/resources') }
-        classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.SourceFolder(resourcesDir, null))        
-        classpath.entries.findAll { entry -> entry.kind == 'con' && entry.path.contains('StandardVMType') }.each { entry ->
-            entry.accessRules.add(new org.gradle.plugins.ide.eclipse.model.AccessRule('accessible', 'javafx/**'))
-        }
+task "create-dirs" {
+    doFirst {
+        sourceSets*.java.srcDirs*.each { it.mkdirs() }
+        sourceSets*.resources.srcDirs*.each { it.mkdirs() }
     }
 }
 
-eclipse {
-    project {
-        file.beforeMerged { project ->
-            project.natures.clear()
-        }
-    }
-    classpath {
-        plusConfigurations << configurations.provided
-    }
-}
-
-/////////////  IDEA  ///////////////////
-idea {
-  module {
-    scopes.PROVIDED.plus += [configurations.provided]
-  }
-}
 
 def gitIgnore = file(".gitignore").readLines()
 def gitIgnoreDirs = gitIgnore*.trim().findAll { !it.startsWith("#") && it.endsWith("/") }
-
-idea {
-  module {
-    outputFile = file("jfxgauge.iml")
-  }
-  project {
-    languageLevel = "1.8"
-    outputFile = file('jfxgauge.ipr')
-    ipr {
-      withXml { provider ->
-        def vcsDirMap = provider.node.component.find { it.@name == 'VcsDirectoryMappings' }
-        if(vcsDirMap) {
-          vcsDirMap.mapping.@directory = '$PROJECT_DIR$'
-          vcsDirMap.mapping.@vcs = 'Git'
-        }
-      }
-    }
-    configure(modules) { module ->
-      excludeDirs = module.project.files(gitIgnoreDirs) as Set
-    }    
-  }
-}
-
-ideaWorkspace {
-  outputFile = file('jfxgauge.iws')
-}
 
 def readFromConsole(prompt) {
     readFromConsole('', prompt)

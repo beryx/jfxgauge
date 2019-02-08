@@ -45,7 +45,11 @@ public class GaugeDemo extends Application {
 	}
 
     private Pane configureTab(TabPane tabPane, String tabTitle, String resourceName) throws IOException {
-        Pane tabContent = FXMLLoader.load(getClass().getResource(resourceName + ".fxml"));
+        URL resource = getClass().getResource(resourceName + ".fxml");
+        if(resource == null) {
+            throw new IOException("Cannot get resource " + resourceName + ".fxml");
+        }
+        Pane tabContent = FXMLLoader.load(resource);
         tabPane.getTabs().add(new Tab(tabTitle, tabContent));
         URL cssResource = getClass().getResource(resourceName + ".css");
         if(cssResource == null) {
