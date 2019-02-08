@@ -201,7 +201,12 @@ gitPublish {
             exclude "$docDir/$jfxgaugeVersion"
         }
     } else {
-      into "$docDir/latest"
+        into "$docDir/latest"
+
+        preserve {
+            include '**'
+            exclude "$docDir/latest"
+        }
     }
   }
 }
