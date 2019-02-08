@@ -195,7 +195,11 @@ gitPublish {
       into "."
     } else if(pgType == 'version') {
         gitPublishPush.enabled = (docDir != 'snapshots')
-      into "$docDir/$jfxgaugeVersion"
+        into "$docDir/$jfxgaugeVersion"
+        preserve {
+            include '**'
+            exclude "$docDir/$jfxgaugeVersion"
+        }
     } else {
       into "$docDir/latest"
     }
