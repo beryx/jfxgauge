@@ -10,8 +10,8 @@ plugins {
     id "com.github.ethankhall.semantic-versioning" version "1.1.0"
     id "com.github.ben-manes.versions" version "0.13.0"
     id "com.jfrog.bintray" version "1.7.1"
-    id "org.asciidoctor.convert" version "1.5.3"
-    id 'org.ajoberstar.github-pages' version '1.6.0-rc.1'
+    id "org.asciidoctor.convert" version "2.0-alpha.5"
+    id "org.ajoberstar.git-publish" version "2.0.0"
     id "com.github.hierynomus.license" version "0.15.0"
     id "net.saliman.properties" version "1.4.5"
     id 'com.github.jk1.dependency-license-report' version '0.3.5'
@@ -81,7 +81,7 @@ signing {
 }
 
 def isPublishTask(task) {
-  task.name.startsWith('publish') && (task.name != 'publishGhPages')
+  task.name.startsWith('publish') && (task.name != 'gitPublishPush')
 }
 
 signArchives {
@@ -176,17 +176,13 @@ task deleteGHPagesRepo(type: Delete) {
    delete "${project.buildDir}/ghpages"
 }
 
-publishGhPages.dependsOn deleteGHPagesRepo
+gitPublishPush.dependsOn deleteGHPagesRepo
 
-githubPages {
-  repoUri = 'https://github.com/beryx/jfxgauge.git'
+gitPublish {
+    repoUri = 'https://github.com/beryx/jfxgauge.git'
+    branch = 'gh-pages'
 
-  credentials {
-    username = System.getenv('GH_PAGES_ACCESS_TOKEN')
-    password = ''
-  }
-
-  pages {
+  contents {
     def pgType = project.hasProperty('ghPageType') ? ghPageType : 'latest'
     if(pgType == 'init') {
       from file("ghpages")
@@ -198,7 +194,7 @@ githubPages {
     if(pgType == 'init') {
       into "."
     } else if(pgType == 'version') {
-      publishGhPages.enabled = (docDir != 'snapshots')
+        gitPublishPush.enabled = (docDir != 'snapshots')
       into "$docDir/$jfxgaugeVersion"
     } else {
       into "$docDir/latest"

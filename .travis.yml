@@ -1,14 +1,15 @@
+if: tag IS blank
+
 language: java
 
 sudo: false
 
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
+jdk:
+  - openjdk11
 
-jdk:  
-  - oraclejdk8
+install:
+  - chmod a+x ./gradlew
+  - chmod a+x ./travis-build.sh
 
 cache:
   directories:

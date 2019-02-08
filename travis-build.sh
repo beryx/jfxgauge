@@ -4,8 +4,8 @@ set -ev
 
 if [ "${TRAVIS_PULL_REQUEST}" == "false" -a "${TRAVIS_BRANCH}" == "master" ]; then
   if [ "`git ls-remote origin gh-pages`" == "" ]; then
-    ./gradlew --no-daemon publishGhPages --rerun-tasks --info --stacktrace -PghPageType=init
+    ./gradlew --no-daemon gitPublishPush --rerun-tasks --info --stacktrace -PghPageType=init
   fi
-  ./gradlew --no-daemon publishGhPages --rerun-tasks --info --stacktrace -PghPageType=latest
-  ./gradlew --no-daemon publishGhPages --rerun-tasks --info --stacktrace -PghPageType=version
+  ./gradlew --no-daemon gitPublishPush --rerun-tasks --info --stacktrace -PghPageType=latest
+  ./gradlew --no-daemon gitPublishPush --rerun-tasks --info --stacktrace -PghPageType=version
 fi
