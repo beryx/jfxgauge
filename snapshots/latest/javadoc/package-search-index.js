@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.guigarage.css"},{"l":"org.beryx.jfxgauge"},{"l":"org.beryx.jfxgauge.demo"}]
